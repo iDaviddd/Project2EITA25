@@ -28,6 +28,8 @@ public class ViewController extends Stage {
     }
 
     void switchScene(String viewName) {
-        scene.setRoot(views.get(viewName).getParent());
+
+        System.out.println(views.get(viewName));
+        this.setScene(new Scene(views.get(viewName)));
     }
 }
