@@ -46,7 +46,8 @@ public class DatabaseHandler {
 		String sql3 = "CREATE TABLE IF NOT EXISTS records (\n" + " record_id integer PRIMARY KEY,\n"
 				+ " patient_id INT NOT NULL,\n" + " doctor_id INT NOT NULL,\n"
 				+ " nurse_id INT NOT NULL" + " division VARCHAR(20),\n";
-
+		String sql4 = "CREATE TABLE IF NOT EXISTS logs (\n" + " timestamp VARCHAR(20),\n"
+				+ "used_id INT NOT NULL";
 		try {
 			Connection conn = DriverManager.getConnection(url);
 			Statement stmt = conn.createStatement();
