@@ -1,9 +1,13 @@
 package client;
 
-public class ClientMain {
+import client.gui.ViewController;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
-	public static void main(String[] args) {
-		
+public class ClientMain extends Application {
+
+	@Override
+	public void start(Stage primaryStage) {
+		ViewController viewController = new ViewController(this);
 	}
-
 }
