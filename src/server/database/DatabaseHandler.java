@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import server.ActionType;
+
 public class DatabaseHandler {
 
 	private String dbName;
@@ -45,7 +47,7 @@ public class DatabaseHandler {
 				+ " patient_id INT NOT NULL,\n" + " doctor_id INT NOT NULL,\n" + " nurse_id INT NOT NULL,\n"
 				+ " division VARCHAR(20)\n" + ");";
 		String sql3 = "CREATE TABLE IF NOT EXISTS logs (\n" + "log_id integer PRIMARY KEY,\n" + "timestamp VARCHAR(20),\n"
-				+ "used_id INT NOT NULL,\n" + "record_id INT NOT NULL,\n" + "action_type VARCHAR(20),\n"
+				+ "user_id INT NOT NULL,\n" + "record_id INT,\n" + "action_type VARCHAR(20),\n"
 				+ "action VARCHAR(255)\n" + ");";
 		try {
 			Connection conn = DriverManager.getConnection(url);
@@ -56,6 +58,24 @@ public class DatabaseHandler {
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
+	}
+	
+	public void addLog(String timestamp, int user_id, int record_id, ActionType action_type, String action) {
+		
+		String sql = "INSERT INTO logs(timestamp, user_id, record_id, action_type, action) VALUES(?,?,?,?,?)";
+		
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, timestamp);
+			pstmt.setInt(2, user_id);
+			pstmt.setInt(3, record_id);
+			pstmt.setString(4, action_type.toString());
+			pstmt.setString(5, action);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("Error: " + e.getMessage());
+		}
+		
 	}
 
 	public void addUser(String firstname, String lastname, String role, String username, String password, String salt,
@@ -73,7 +93,7 @@ public class DatabaseHandler {
 			pstmt.setString(7, division);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			System.out.println("Error: " + e.getMessage());
 		}
 	}
 
@@ -84,7 +104,7 @@ public class DatabaseHandler {
 			Statement stmt = conn.createStatement();
 			stmt.execute(sql);
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			System.out.println("Error: " + e.getMessage());
 		}
 	}
 
@@ -103,7 +123,7 @@ public class DatabaseHandler {
 						+ rs.getString("division"));
 			}
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			System.out.println("Error: " + e.getMessage());
 		}
 	}
 

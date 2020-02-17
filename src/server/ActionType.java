@@ -1,0 +1,14 @@
+package server;
+
+public enum ActionType {
+	
+	ADD_USER,
+	MODIFY_USER,
+	REMOVE_USER,
+	LOOKUP_USER,
+	CREATE_RECORD,
+	READ_RECORD,
+	MODIFY_RECORD,
+	REMOVE_RECORD
+
+}
