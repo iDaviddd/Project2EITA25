@@ -1,11 +1,11 @@
 package server;
 
+import server.database.DatabaseHandler;
+
 public class ServerMain {
 	
 	public static void main(String[] args) {
-		System.out.println("Server starting...");
-		
-		System.out.println("Server started successfully");
+		DatabaseHandler.testDB();
 	}
 
 }
