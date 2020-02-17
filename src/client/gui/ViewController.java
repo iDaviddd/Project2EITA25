@@ -17,7 +17,9 @@ public class ViewController extends Stage {
     public ViewController(ClientMain clientMain) {
 
         views.put("login", new LoginView(this).getParent());
-
+        views.put("records", new RecordView(this).getParent());
+        views.put("detail", new DetailView(this).getParent());
+        views.put("create", new CreateRecordView(this).getParent());
         scene = new Scene(views.get("login"), 300, 250);
         this.setTitle("Title");
         this.setScene(scene);
