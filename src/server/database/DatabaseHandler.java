@@ -46,9 +46,9 @@ public class DatabaseHandler {
 		String sql2 = "CREATE TABLE IF NOT EXISTS records (\n" + " record_id integer PRIMARY KEY,\n"
 				+ " patient_id INT NOT NULL,\n" + " doctor_id INT NOT NULL,\n" + " nurse_id INT NOT NULL,\n"
 				+ " division VARCHAR(20)\n" + ");";
-		String sql3 = "CREATE TABLE IF NOT EXISTS logs (\n" + "log_id integer PRIMARY KEY,\n" + "timestamp VARCHAR(20),\n"
-				+ "user_id INT NOT NULL,\n" + "record_id INT,\n" + "action_type VARCHAR(20),\n"
-				+ "action VARCHAR(255)\n" + ");";
+		String sql3 = "CREATE TABLE IF NOT EXISTS logs (\n" + "log_id integer PRIMARY KEY,\n"
+				+ "timestamp VARCHAR(20),\n" + "user_id INT NOT NULL,\n" + "record_id INT,\n"
+				+ "action_type VARCHAR(20),\n" + "action VARCHAR(255)\n" + ");";
 		try {
 			Connection conn = DriverManager.getConnection(url);
 			Statement stmt = conn.createStatement();
@@ -59,11 +59,11 @@ public class DatabaseHandler {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+
 	public void addLog(String timestamp, int user_id, int record_id, ActionType action_type, String action) {
-		
+
 		String sql = "INSERT INTO logs(timestamp, user_id, record_id, action_type, action) VALUES(?,?,?,?,?)";
-		
+
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, timestamp);
@@ -75,7 +75,7 @@ public class DatabaseHandler {
 		} catch (SQLException e) {
 			System.out.println("Error: " + e.getMessage());
 		}
-		
+
 	}
 
 	public void addUser(String firstname, String lastname, String role, String username, String password, String salt,
@@ -117,10 +117,9 @@ public class DatabaseHandler {
 
 			// loop through the result set
 			while (rs.next()) {
-				System.out.println(rs.getInt("id") + "\t" + rs.getString("firstname") + "\t"
-						+ rs.getString("lastname") + "\t" + rs.getString("role") + "\t" + rs.getString("username")
-						+ "\t" + rs.getString("password") + "\t" + rs.getString("salt") + "\t"
-						+ rs.getString("division"));
+				System.out.println(rs.getInt("id") + "\t" + rs.getString("firstname") + "\t" + rs.getString("lastname")
+						+ "\t" + rs.getString("role") + "\t" + rs.getString("username") + "\t"
+						+ rs.getString("password") + "\t" + rs.getString("salt") + "\t" + rs.getString("division"));
 			}
 		} catch (SQLException e) {
 			System.out.println("Error: " + e.getMessage());
