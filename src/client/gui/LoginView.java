@@ -34,6 +34,7 @@ public class LoginView {
 
 
         BorderPane borderPane = new BorderPane();
+
         VBox loginText = new VBox(5);
         Label textUsername = new Label("Username");
         TextField username = new TextField();
@@ -52,6 +53,7 @@ public class LoginView {
             public void handle(ActionEvent event) {
                user = username.getText();
                pass = password.getText();
+               viewController.switchScene("records");
             }
         });
 
@@ -63,7 +65,7 @@ public class LoginView {
 
         parent = borderPane;
 
-        viewController.setTitle("Title");
+        viewController.setTitle("Login");
     }
 
     /**
