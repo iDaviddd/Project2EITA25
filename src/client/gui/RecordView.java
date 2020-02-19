@@ -30,6 +30,7 @@ public class RecordView {
         ListView<String> listView = new ListView<>();
         listView.getItems().add("Test 1");
         listView.getItems().add("Test 2");
+        listView.setPrefHeight(150);
 
         BorderPane borderPane = new BorderPane();
         VBox labelBox = new VBox();
