@@ -1,8 +1,10 @@
 package client.gui;
 
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,6 +19,7 @@ import javafx.scene.text.TextAlignment;
 public class RecordView {
 
     private Parent parent;
+    private String recordChosen;
 
     RecordView(ViewController viewController){
         Label label = new Label("Records");
@@ -34,7 +37,12 @@ public class RecordView {
         labelBox.getChildren().addAll(label);
         labelBox.getChildren().addAll(listView);
 
+        Button chooseButton = new Button("Choose");
+        chooseButton.setDisable(true);
+
+
         borderPane.setTop(labelBox);
+        borderPane.setBottom(chooseButton);
 
         parent = borderPane;
 
@@ -44,6 +52,15 @@ public class RecordView {
             @Override
             public void handle(MouseEvent event) {
                 System.out.println(listView.getSelectionModel().getSelectedItem());
+                chooseButton.setDisable(false);
+            }
+        });
+
+        chooseButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                recordChosen = listView.getSelectionModel().getSelectedItem();
+                viewController.switchScene("detail");
             }
         });
     }
