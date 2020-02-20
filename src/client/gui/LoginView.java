@@ -1,5 +1,6 @@
 package client.gui;
 
+import client.network.NetworkHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -14,6 +15,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+
+import java.io.IOException;
 
 
 public class LoginView {
@@ -53,7 +56,13 @@ public class LoginView {
             public void handle(ActionEvent event) {
                user = username.getText();
                pass = password.getText();
-               viewController.switchScene("records");
+                try {
+                    NetworkHandler.SendRequest("Test");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                viewController.switchScene("records");
+
             }
         });
 
