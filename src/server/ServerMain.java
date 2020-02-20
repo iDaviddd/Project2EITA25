@@ -50,8 +50,8 @@ public class ServerMain {
 				System.out.println("print - print all registered users in database.");
 				break;
 			default:
-				break;
 				System.out.println("Unknown command. Type 'help' for help.");
+				break;
 			}
 		}
 		
