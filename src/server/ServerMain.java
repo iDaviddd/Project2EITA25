@@ -4,6 +4,11 @@ import java.util.Scanner;
 
 import server.database.DatabaseHandler;
 
+import javax.net.ServerSocketFactory;
+import javax.net.ssl.SSLServerSocket;
+import java.io.IOException;
+import java.net.ServerSocket;
+
 public class ServerMain {
 	
 	private static boolean running;
@@ -11,6 +16,20 @@ public class ServerMain {
 	
 	public static void main(String[] args) {
 		System.out.println("Starting server...");
+		
+		int port = 9876;
+		String type = "TLS";
+
+		try {
+			ServerSocketFactory ssf = SocketFactory.getServerSocketFactory(type);
+			ServerSocket ss = ssf.createServerSocket(port);
+			new NetworkHandler(ss);
+			((SSLServerSocket)ss).setNeedClientAuth(true); // enables client authentication
+		} catch (IOException e) {
+			System.out.println("Unable to start Server: " + e.getMessage());
+			e.printStackTrace();
+		}
+		
 		Scanner in = new Scanner(System.in);
 		System.out.print("Enter path to database file: ");
 		String url = in.nextLine();
@@ -18,8 +37,8 @@ public class ServerMain {
 		System.out.println("Database initialized.");
 		running = true;
 		System.out.println("Server started.");
-		
 		while (running) {
+		
 			String input = in.nextLine();
 			switch (input) {
 			case "quit":
