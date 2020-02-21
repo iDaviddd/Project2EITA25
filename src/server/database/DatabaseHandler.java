@@ -7,48 +7,49 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
 
 import server.ActionType;
+import server.Log;
+import server.Record;
+import server.User;
 
 public class DatabaseHandler {
 
-	private String dbName;
+	private String url;
 	Connection conn;
 
-	public DatabaseHandler(String dbName) {
-		this.dbName = dbName;
+	public DatabaseHandler(String url) {
+		this.url = "jdbc:sqlite:" + url;
 		this.conn = null;
 		initializeDB();
+		createTables();
 	}
 
 	private void initializeDB() {
-		String url = "jdbc:sqlite:/Users/dohrbom/java-workspace/EITA25 Project 2/database/" + dbName + ".db";
 		try {
 			this.conn = DriverManager.getConnection(url);
 			if (conn != null) {
 				DatabaseMetaData meta = conn.getMetaData();
-//				System.out.println("The driver name is " + meta.getDriverName());
+				System.out.println("The driver name is " + meta.getDriverName());
 			}
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			System.out.println("Errorr: " + e.getMessage());
 		}
 	}
 
-	public void createTables() {
-		// SQLite connection string
-		String url = "jdbc:sqlite:/Users/dohrbom/java-workspace/EITA25 Project 2/database/" + dbName + ".db";
-
+	private void createTables() {
 		// SQL statement for creating a new table
 		String sql1 = "CREATE TABLE IF NOT EXISTS users (\n" + " id integer PRIMARY KEY, \n"
-				+ " firstname VARCHAR(20),\n" + " lastname VARCHAR(20),\n" + " role VARCHAR(20) NOT NULL,\n"
-				+ " username VARCHAR(20) NOT NULL,\n" + " password text NOT NULL,\n" + " salt text NOT NULL,\n"
+				+ " name VARCHAR(255),\n" + " role VARCHAR(20) NOT NULL,\n"
+				+ " personal_number VARCHAR(20) NOT NULL,\n" + " password text NOT NULL,\n" + " salt text NOT NULL,\n"
 				+ " division VARCHAR(20)\n" + ");";
 		String sql2 = "CREATE TABLE IF NOT EXISTS records (\n" + " record_id integer PRIMARY KEY,\n"
-				+ " patient_id INT NOT NULL,\n" + " doctor_id INT NOT NULL,\n" + " nurse_id INT NOT NULL,\n"
-				+ " division VARCHAR(20)\n" + ");";
+				+ " patient_personal_number INT NOT NULL,\n" + " doctor_personal_number INT NOT NULL,\n" + " nurse_personal_number INT NOT NULL,\n"
+				+ " division VARCHAR(20) NOT NULL,\n" + " record VARCHAR(255) NOT NULL\n" + ");";
 		String sql3 = "CREATE TABLE IF NOT EXISTS logs (\n" + "log_id integer PRIMARY KEY,\n"
-				+ "timestamp VARCHAR(20),\n" + "user_id INT NOT NULL,\n" + "record_id INT,\n"
-				+ "action_type VARCHAR(20),\n" + "action VARCHAR(255)\n" + ");";
+				+ "timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,\n" + "user_personal_number INT NOT NULL,\n" + "record_id INT,\n"
+				+ "action_type VARCHAR(20) NOT NULL,\n" + "action VARCHAR(255) NOT NULL\n" + ");";
 		try {
 			Connection conn = DriverManager.getConnection(url);
 			Statement stmt = conn.createStatement();
@@ -56,21 +57,36 @@ public class DatabaseHandler {
 			stmt.execute(sql2);
 			stmt.execute(sql3);
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			System.out.println("Error: " + e.getMessage());
+		}
+	}
+	
+	public void addRecord(Record r) {
+		String sql = "INSERT INTO records(patient_personal_number, doctor_personal_number, nurse_personal_number, divison, record) VALUES(?,?,?,?,?)";
+		
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, r.getPatientPersonalNumber());
+			pstmt.setString(2, r.getDoctorPersonalNumber());
+			pstmt.setString(3, r.getNursePersonalNumber());
+			pstmt.setString(4, r.getDivision());
+			pstmt.setString(5, r.getRecord());
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("Error: " + e.getMessage());
 		}
 	}
 
-	public void addLog(String timestamp, int user_id, int record_id, ActionType action_type, String action) {
+	public void addLog(Log log, int user_id, int record_id, ActionType action_type, String action) {
 
-		String sql = "INSERT INTO logs(timestamp, user_id, record_id, action_type, action) VALUES(?,?,?,?,?)";
+		String sql = "INSERT INTO logs(user_personal_number, record_id, action_type, action) VALUES(?,?,?,?)";
 
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, timestamp);
-			pstmt.setInt(2, user_id);
-			pstmt.setInt(3, record_id);
-			pstmt.setString(4, action_type.toString());
-			pstmt.setString(5, action);
+			pstmt.setInt(1, user_id);
+			pstmt.setInt(2, record_id);
+			pstmt.setString(3, action_type.toString());
+			pstmt.setString(4, action);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("Error: " + e.getMessage());
@@ -78,19 +94,21 @@ public class DatabaseHandler {
 
 	}
 
-	public void addUser(String firstname, String lastname, String role, String username, String password, String salt,
-			String division) {
-		String sql = "INSERT INTO users(firstname, lastname, role, username, password, salt, division) VALUES(?,?,?,?,?,?,?)";
+	public void addUser(User user) {
+		String sql = "INSERT INTO users(name, role, personal_number, password, salt, division) VALUES(?,?,?,?,?,?)";
 
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, firstname);
-			pstmt.setString(2, lastname);
-			pstmt.setString(3, role);
-			pstmt.setString(4, username);
-			pstmt.setString(5, password);
-			pstmt.setString(6, salt);
-			pstmt.setString(7, division);
+			pstmt.setString(1, user.getName());
+			pstmt.setString(2, user.getRole());
+			pstmt.setString(3, user.getPersonalNumber());
+			pstmt.setString(4, user.getPassword());
+			pstmt.setString(5, user.getSalt());
+			if(user.getDivision() != "") {
+				pstmt.setString(6, user.getDivision());
+			} else {
+				pstmt.setString(6, null);
+			}
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("Error: " + e.getMessage());
@@ -98,14 +116,43 @@ public class DatabaseHandler {
 	}
 
 	public void deleteUser(int id) {
+		// Specify sql command
 		String sql = "DELETE FROM users WHERE id='" + id + "';";
 
 		try {
+			// Execute command
 			Statement stmt = conn.createStatement();
 			stmt.execute(sql);
 		} catch (SQLException e) {
 			System.out.println("Error: " + e.getMessage());
 		}
+	}
+	
+	public HashSet<User> findUsers(String column, String search_term) {
+		HashSet<User> set = new HashSet<User>();
+		
+		String sql = "SELECT * FROM users WHERE " + column + "='" + search_term + "';";
+		
+		try {
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			while(rs.next()) {
+				int id = rs.getInt("id");
+				String name = rs.getString("name");
+				String role = rs.getString("role");
+				String personal_number = rs.getString("personal_number");
+				String password = rs.getString("password");
+				String salt = rs.getString("salt");
+				String division = rs.getString("division");
+				User user = new User(name, role, personal_number, password, salt, division, id);
+				System.out.println(user);
+			}
+		} catch (SQLException e) {
+			System.out.println("Error: " + e.getMessage());
+		}
+		
+		return set;
 	}
 
 	public void printAllUsers() {
@@ -115,11 +162,11 @@ public class DatabaseHandler {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 
-			// loop through the result set
+			// Loop through the result set
 			while (rs.next()) {
-				System.out.println(rs.getInt("id") + "\t" + rs.getString("firstname") + "\t" + rs.getString("lastname")
-						+ "\t" + rs.getString("role") + "\t" + rs.getString("username") + "\t"
-						+ rs.getString("password") + "\t" + rs.getString("salt") + "\t" + rs.getString("division"));
+				System.out.println(rs.getInt("id") + "\t" + rs.getString("name") + "\t" + rs.getString("role") 
+				+ "\t" + rs.getString("personal_number") + "\t" + rs.getString("password") + "\t" 
+				+ rs.getString("salt") + "\t" + rs.getString("division"));
 			}
 		} catch (SQLException e) {
 			System.out.println("Error: " + e.getMessage());
