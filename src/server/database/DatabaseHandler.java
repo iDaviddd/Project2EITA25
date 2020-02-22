@@ -40,16 +40,16 @@ public class DatabaseHandler {
 
 	private void createTables() {
 		// SQL statement for creating a new table
-		String sql1 = "CREATE TABLE IF NOT EXISTS users (\n" + " id integer PRIMARY KEY, \n"
-				+ " name VARCHAR(255),\n" + " role VARCHAR(20) NOT NULL,\n"
-				+ " personal_number VARCHAR(20) NOT NULL,\n" + " password text NOT NULL,\n" + " salt text NOT NULL,\n"
-				+ " division VARCHAR(20)\n" + ");";
+		String sql1 = "CREATE TABLE IF NOT EXISTS users (\n" + " id integer PRIMARY KEY, \n" + " name VARCHAR(255),\n"
+				+ " role VARCHAR(20) NOT NULL,\n" + " personal_number VARCHAR(20) NOT NULL,\n"
+				+ " password text NOT NULL,\n" + " salt text NOT NULL,\n" + " division VARCHAR(20)\n" + ");";
 		String sql2 = "CREATE TABLE IF NOT EXISTS records (\n" + " record_id integer PRIMARY KEY,\n"
-				+ " patient_personal_number INT NOT NULL,\n" + " doctor_personal_number INT NOT NULL,\n" + " nurse_personal_number INT NOT NULL,\n"
-				+ " division VARCHAR(20) NOT NULL,\n" + " record VARCHAR(255) NOT NULL\n" + ");";
+				+ " patient_personal_number INT NOT NULL,\n" + " doctor_personal_number INT NOT NULL,\n"
+				+ " nurse_personal_number INT NOT NULL,\n" + " division VARCHAR(20) NOT NULL,\n"
+				+ " record VARCHAR(255) NOT NULL\n" + ");";
 		String sql3 = "CREATE TABLE IF NOT EXISTS logs (\n" + "log_id integer PRIMARY KEY,\n"
-				+ "timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,\n" + "user_personal_number INT NOT NULL,\n" + "record_id INT,\n"
-				+ "action_type VARCHAR(20) NOT NULL,\n" + "action VARCHAR(255) NOT NULL\n" + ");";
+				+ "timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,\n" + "user_personal_number INT NOT NULL,\n"
+				+ "record_id INT,\n" + "action_type VARCHAR(20) NOT NULL,\n" + "action VARCHAR(255) NOT NULL\n" + ");";
 		try {
 			Connection conn = DriverManager.getConnection(url);
 			Statement stmt = conn.createStatement();
@@ -60,10 +60,10 @@ public class DatabaseHandler {
 			System.out.println("Error: " + e.getMessage());
 		}
 	}
-	
+
 	public void addRecord(Record r) {
 		String sql = "INSERT INTO records(patient_personal_number, doctor_personal_number, nurse_personal_number, divison, record) VALUES(?,?,?,?,?)";
-		
+
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, r.getPatientPersonalNumber());
@@ -77,16 +77,16 @@ public class DatabaseHandler {
 		}
 	}
 
-	public void addLog(Log log, int user_id, int record_id, ActionType action_type, String action) {
+	public void addLog(Log log) {
 
 		String sql = "INSERT INTO logs(user_personal_number, record_id, action_type, action) VALUES(?,?,?,?)";
 
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, user_id);
-			pstmt.setInt(2, record_id);
-			pstmt.setString(3, action_type.toString());
-			pstmt.setString(4, action);
+			pstmt.setString(1, log.getPersonalNumber());
+			pstmt.setInt(2, log.getRecordId());
+			pstmt.setString(3, log.getActionType().toString());
+			pstmt.setString(4, log.getAction());
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("Error: " + e.getMessage());
@@ -104,7 +104,7 @@ public class DatabaseHandler {
 			pstmt.setString(3, user.getPersonalNumber());
 			pstmt.setString(4, user.getPassword());
 			pstmt.setString(5, user.getSalt());
-			if(user.getDivision() != "") {
+			if (user.getDivision() != "") {
 				pstmt.setString(6, user.getDivision());
 			} else {
 				pstmt.setString(6, null);
@@ -127,17 +127,17 @@ public class DatabaseHandler {
 			System.out.println("Error: " + e.getMessage());
 		}
 	}
-	
+
 	public HashSet<User> findUsers(String column, String search_term) {
 		HashSet<User> set = new HashSet<User>();
-		
+
 		String sql = "SELECT * FROM users WHERE " + column + "='" + search_term + "';";
-		
+
 		try {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
-			
-			while(rs.next()) {
+
+			while (rs.next()) {
 				int id = rs.getInt("id");
 				String name = rs.getString("name");
 				String role = rs.getString("role");
@@ -151,7 +151,7 @@ public class DatabaseHandler {
 		} catch (SQLException e) {
 			System.out.println("Error: " + e.getMessage());
 		}
-		
+
 		return set;
 	}
 
@@ -164,9 +164,9 @@ public class DatabaseHandler {
 
 			// Loop through the result set
 			while (rs.next()) {
-				System.out.println(rs.getInt("id") + "\t" + rs.getString("name") + "\t" + rs.getString("role") 
-				+ "\t" + rs.getString("personal_number") + "\t" + rs.getString("password") + "\t" 
-				+ rs.getString("salt") + "\t" + rs.getString("division"));
+				System.out.println(rs.getInt("id") + "\t" + rs.getString("name") + "\t" + rs.getString("role") + "\t"
+						+ rs.getString("personal_number") + "\t" + rs.getString("password") + "\t"
+						+ rs.getString("salt") + "\t" + rs.getString("division"));
 			}
 		} catch (SQLException e) {
 			System.out.println("Error: " + e.getMessage());
