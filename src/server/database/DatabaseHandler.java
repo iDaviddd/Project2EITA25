@@ -149,10 +149,36 @@ public class DatabaseHandler {
 				set.add(user);
 				System.out.println(user);
 			}
+				
 		} catch (SQLException e) {
 			System.out.println("Error: " + e.getMessage());
 		}
-
+		return set;
+	}
+	
+	
+	public HashSet<Record>findRecords(String column, String search_term){
+		HashSet<Record> set = new HashSet<Record>();
+		
+		String sql = "SELECT * FROM users WHERE " + column + "='" + search_term + "';";
+		
+		try {
+		Statement stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery(sql);
+		
+		while(rs.next()) {
+		String patient_personal_number = rs.getString("patient_personal_number");
+	    String doctor_personal_number= rs.getString("doctor_personal_number");
+		String nurse_personal_number = rs.getString("nurse_personal_number");
+		String division = rs.getString("division") ;
+		String record= rs.getString("record");
+		Record r = new Record(patient_personal_number,doctor_personal_number, nurse_personal_number,division,record);
+		set.add(r);
+		}
+		
+		} catch (SQLException e) {
+			System.out.println("Error"+ e.getMessage());
+		}
 		return set;
 	}
 
