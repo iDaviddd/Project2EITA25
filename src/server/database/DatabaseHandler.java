@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.HashSet;
 
 import server.ActionType;
@@ -159,7 +160,7 @@ public class DatabaseHandler {
 	public HashSet<Record> findRecords(String column, String search_term) {
 		HashSet<Record> set = new HashSet<Record>();
 
-		String sql = "SELECT * FROM users WHERE " + column + "='" + search_term + "';";
+		String sql = "SELECT * FROM records WHERE " + column + "='" + search_term + "';";
 
 		try {
 			Statement stmt = conn.createStatement();
@@ -174,10 +175,39 @@ public class DatabaseHandler {
 				Record r = new Record(patient_personal_number, doctor_personal_number, nurse_personal_number, division,
 						record);
 				set.add(r);
+				System.out.println(r);
 			}
 
 		} catch (SQLException e) {
 			System.out.println("Error" + e.getMessage());
+		}
+		return set;
+	}
+
+	public HashSet<Log> findLogs(String column, String search_term) {
+		HashSet<Log> set = new HashSet<Log>();
+
+		String sql = "SELECT * FROM logs WHERE " + column + "='" + search_term + "';";
+
+		try {
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				String personal_number = rs.getString("personal_number");
+				int record_id = rs.getInt("record_id");
+				Integer log_id = rs.getInt("log_id");
+				String action_type = rs.getString("action_type");
+				String action = rs.getString("action");
+				Timestamp timestamp = rs.getTimestamp("timestamp");
+				Log log = new Log(personal_number, record_id, log_id, action_type, action, timestamp);
+				set.add(log);
+				System.out.println(log);
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Error: " + e.getMessage());
 		}
 		return set;
 	}
