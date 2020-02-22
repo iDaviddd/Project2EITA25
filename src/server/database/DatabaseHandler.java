@@ -146,6 +146,7 @@ public class DatabaseHandler {
 				String salt = rs.getString("salt");
 				String division = rs.getString("division");
 				User user = new User(name, role, personal_number, password, salt, division, id);
+				set.add(user);
 				System.out.println(user);
 			}
 		} catch (SQLException e) {
