@@ -45,7 +45,7 @@ public class DatabaseHandler {
 		// SQL statement for creating a new table
 		String sql1 = "CREATE TABLE IF NOT EXISTS users (\n" + " id integer PRIMARY KEY, \n" + " name VARCHAR(255),\n"
 				+ " role VARCHAR(20) NOT NULL,\n" + " personal_number VARCHAR(20) NOT NULL,\n"
-				+ " password text NOT NULL,\n" + " salt text NOT NULL,\n" + " division VARCHAR(20)\n" + ");";
+				+ " password text NOT NULL,\n" + " salt text NOT NULL,\n" + " division VARCHAR(20),\n" + " otp_secret text NOT NULL\n" + ");";
 		String sql2 = "CREATE TABLE IF NOT EXISTS records (\n" + " record_id integer PRIMARY KEY,\n"
 				+ " patient_personal_number INT NOT NULL,\n" + " doctor_personal_number INT NOT NULL,\n"
 				+ " nurse_personal_number INT NOT NULL,\n" + " division VARCHAR(20) NOT NULL,\n"
@@ -98,7 +98,7 @@ public class DatabaseHandler {
 	}
 
 	public void addUser(User user) {
-		String sql = "INSERT INTO users(name, role, personal_number, password, salt, division) VALUES(?,?,?,?,?,?)";
+		String sql = "INSERT INTO users(name, role, personal_number, password, salt, division, otp_secret) VALUES(?,?,?,?,?,?,?)";
 
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -107,11 +107,15 @@ public class DatabaseHandler {
 			pstmt.setString(3, user.getPersonalNumber());
 			pstmt.setString(4, user.getPassword());
 			pstmt.setString(5, user.getSalt());
+
 			if (user.getDivision() != "") {
 				pstmt.setString(6, user.getDivision());
 			} else {
 				pstmt.setString(6, null);
 			}
+
+			pstmt.setString(7, user.getOtpSecret());
+
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("Error: " + e.getMessage());
@@ -148,7 +152,8 @@ public class DatabaseHandler {
 				String password = rs.getString("password");
 				String salt = rs.getString("salt");
 				String division = rs.getString("division");
-				User user = new User(name, role, personal_number, password, salt, division, id);
+				String otpSecret = rs.getString("otp_secret");
+				User user = new User(name, role, personal_number, password, salt, division, id, otpSecret);
 				users.add(user);
 				System.out.println(user);
 			}
@@ -225,7 +230,7 @@ public class DatabaseHandler {
 			while (rs.next()) {
 				System.out.println(rs.getInt("id") + "\t" + rs.getString("name") + "\t" + rs.getString("role") + "\t"
 						+ rs.getString("personal_number") + "\t" + rs.getString("password") + "\t"
-						+ rs.getString("salt") + "\t" + rs.getString("division"));
+						+ rs.getString("salt") + "\t" + rs.getString("division")+ "\t" + rs.getString("otp_secret"));
 			}
 		} catch (SQLException e) {
 			System.out.println("Error: " + e.getMessage());

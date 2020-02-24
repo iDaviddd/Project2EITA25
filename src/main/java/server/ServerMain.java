@@ -26,7 +26,7 @@ public class ServerMain {
 			ServerSocketFactory ssf = SocketFactory.getServerSocketFactory(type);
 			ServerSocket ss = ssf.createServerSocket(port);
 			new NetworkHandler(ss);
-			((SSLServerSocket)ss).setNeedClientAuth(true); // enables client authentication
+			((SSLServerSocket)ss).setNeedClientAuth(false); // disables client authentication
 		} catch (IOException e) {
 			System.out.println("Unable to start Server: " + e.getMessage());
 			e.printStackTrace();
@@ -65,6 +65,7 @@ public class ServerMain {
 					division = in.nextLine();
 				}
 				User newuser = new User(name, role, personal_number, password, "salt", division);
+
 				dbh.addUser(newuser);
 				System.out.println(name + " has been added to the system. ");
 				break;

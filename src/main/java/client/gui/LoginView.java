@@ -44,13 +44,21 @@ public class LoginView {
         final TextField username = new TextField();
         username.setPromptText("username");
         loginText.setPadding(new Insets(10, 50, 0, 50));
+
         Label textPassword = new Label("Password");
         final PasswordField password = new PasswordField();
         password.setPromptText("password");
 
+        Label textOTP= new Label("OTP");
+        final TextField OTP = new TextField();
+        OTP.setPromptText("OTP");
+        textOTP.setPadding(new Insets(10, 50, 0, 50));
+
+
+
         Button loginButton = new Button("Login");
 
-        loginText.getChildren().addAll(textUsername, username, textPassword, password, loginButton);
+        loginText.getChildren().addAll(textUsername, username, textPassword, password, textOTP, OTP,  loginButton);
 
         loginButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -58,6 +66,7 @@ public class LoginView {
                 try {
                     NetworkHandler.SendRequest(username.getText());
                     NetworkHandler.SendRequest(password.getText());
+                    NetworkHandler.SendRequest(OTP.getText());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
