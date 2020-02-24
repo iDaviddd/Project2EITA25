@@ -16,6 +16,7 @@ public class ClientMain extends Application {
 		int port = 9876;
 
 		new NetworkHandler(host, port);
+
 	}
 
 }

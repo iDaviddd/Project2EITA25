@@ -6,6 +6,11 @@ import javax.security.cert.X509Certificate;
 import java.io.*;
 import java.net.ServerSocket;
 import java.security.KeyStore;
+import java.util.List;
+import java.util.Set;
+
+import com.sun.security.ntlm.Server;
+import utility.Communicator;
 
 
 public class NetworkHandler implements Runnable{
@@ -35,14 +40,22 @@ public class NetworkHandler implements Runnable{
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             String clientMsg = null;
-            while ((clientMsg = in.readLine()) != null) {
-                String rev = new StringBuilder(clientMsg).reverse().toString();
-                System.out.println("received '" + clientMsg + "' from client");
-                System.out.print("sending '" + rev + "' to client...");
-                out.println(rev);
-                out.flush();
-                System.out.println("done\n");
+            boolean authenticated = false;
+            while (!authenticated) {
+                Communicator communicator = new Communicator(in, out);
+
+
+                String username = communicator.receive();
+                String password = communicator.receive();
+
+                System.out.println("username: " + username);
+                System.out.println("password: " + password);
+                System.out.println("-------------");
+                if(login(username,password)){
+                    authenticated = true;
+                }
             }
+            System.out.println("Authenticated");
             in.close();
             out.close();
             socket.close();
@@ -56,7 +69,18 @@ public class NetworkHandler implements Runnable{
         }
     }
 
+
     private void newListener() { (new Thread(this)).start(); } // calls run()
 
+    private boolean login(String username, String password){
+        List<User> users = ServerMain.dbh.findUsers("personal_number", username);
+        if(users.size() != 1) return false;
+
+        if(!users.get(0).getPassword().equals(password))
+            return false;
+        System.out.println(users);
+
+        return true;
+    }
 
 }

@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 public class ServerMain {
+
+	static DatabaseHandler dbh;
 	
 	private static boolean running;
 	// /Users/dohrbom/java-workspace/EITA25_Project_2/database/database.db
@@ -33,7 +35,7 @@ public class ServerMain {
 		Scanner in = new Scanner(System.in);
 		System.out.print("Enter path to database file: ");
 		String url = in.nextLine();
-		DatabaseHandler dbh = new DatabaseHandler(url);
+		dbh = new DatabaseHandler(url);
 		System.out.println("Database initialized.");
 		running = true;
 		System.out.println("Server started.");

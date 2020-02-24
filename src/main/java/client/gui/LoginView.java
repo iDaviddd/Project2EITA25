@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import utility.Communicator;
 
 import java.io.IOException;
 
@@ -40,11 +41,11 @@ public class LoginView {
 
         VBox loginText = new VBox(5);
         Label textUsername = new Label("Username");
-        TextField username = new TextField();
+        final TextField username = new TextField();
         username.setPromptText("username");
         loginText.setPadding(new Insets(10, 50, 0, 50));
         Label textPassword = new Label("Password");
-        PasswordField password = new PasswordField();
+        final PasswordField password = new PasswordField();
         password.setPromptText("password");
 
         Button loginButton = new Button("Login");
@@ -54,14 +55,13 @@ public class LoginView {
         loginButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-               user = username.getText();
-               pass = password.getText();
                 try {
-                    NetworkHandler.SendRequest("Test");
+                    NetworkHandler.SendRequest(username.getText());
+                    NetworkHandler.SendRequest(password.getText());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                viewController.switchScene("records");
+               // viewController.switchScene("records");
 
             }
         });

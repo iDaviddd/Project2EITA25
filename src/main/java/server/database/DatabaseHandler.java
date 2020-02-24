@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 import server.ActionType;
 import server.Log;
@@ -129,8 +131,8 @@ public class DatabaseHandler {
 		}
 	}
 
-	public HashSet<User> findUsers(String column, String search_term) {
-		HashSet<User> set = new HashSet<User>();
+	public List<User> findUsers(String column, String search_term) {
+		List<User> users = new LinkedList<>();
 
 		String sql = "SELECT * FROM users WHERE " + column + "='" + search_term + "';";
 
@@ -147,14 +149,14 @@ public class DatabaseHandler {
 				String salt = rs.getString("salt");
 				String division = rs.getString("division");
 				User user = new User(name, role, personal_number, password, salt, division, id);
-				set.add(user);
+				users.add(user);
 				System.out.println(user);
 			}
 
 		} catch (SQLException e) {
 			System.out.println("Error: " + e.getMessage());
 		}
-		return set;
+		return users;
 	}
 
 	public HashSet<Record> findRecords(String column, String search_term) {

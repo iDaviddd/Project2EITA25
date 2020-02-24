@@ -1,13 +1,17 @@
 package client.network;
 
+import utility.Communicator;
+
 import javax.net.ssl.*;
 import java.io.*;
 import java.security.KeyStore;
+
 
 public class NetworkHandler {
     private static SSLSocket socket;
     private static PrintWriter out;
     private static BufferedReader in;
+    private static Communicator communicator;
 
     public NetworkHandler(String host, int port){
         try { /* set up a key manager for client authentication */
@@ -33,8 +37,9 @@ public class NetworkHandler {
             socket.startHandshake();
             System.out.println("secure connection established\n\n");
 
-             out = new PrintWriter(socket.getOutputStream(), true);
+            out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            communicator = new Communicator(in, out);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,10 +47,6 @@ public class NetworkHandler {
     }
 
     public static void SendRequest(String request) throws IOException {
-        out.println(request);
-        out.flush();
-
-        //in.close();
-        //out.close();
+        communicator.send(request);
     }
 }
