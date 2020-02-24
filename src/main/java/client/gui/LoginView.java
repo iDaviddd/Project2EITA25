@@ -6,10 +6,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -64,13 +61,28 @@ public class LoginView {
             @Override
             public void handle(ActionEvent event) {
                 try {
+                    boolean authenticated = false;
+
+
+
                     NetworkHandler.SendRequest(username.getText());
                     NetworkHandler.SendRequest(password.getText());
                     NetworkHandler.SendRequest(OTP.getText());
+
+                    String response = NetworkHandler.receive();
+
+                    if(response.equals("Authenticated")){
+                        viewController.switchScene("records");
+                    }
+                    else{
+                        Alert a = new Alert(Alert.AlertType.ERROR);
+                        a.setContentText("Wrong username, password or OTP");
+                        a.show();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-               // viewController.switchScene("records");
+
 
             }
         });

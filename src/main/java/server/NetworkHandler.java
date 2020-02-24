@@ -41,10 +41,8 @@ public class NetworkHandler implements Runnable{
 
             String clientMsg = null;
             boolean authenticated = false;
+            Communicator communicator = new Communicator(in, out);
             while (!authenticated) {
-                Communicator communicator = new Communicator(in, out);
-
-
                 String username = communicator.receive();
                 String password = communicator.receive();
                 String OTP = communicator.receive();
@@ -53,10 +51,21 @@ public class NetworkHandler implements Runnable{
                 System.out.println("password: " + password);
                 System.out.println("-------------");
                 if(login(username,password,OTP)){
+                    communicator.send("Authenticated");
                     authenticated = true;
                 }
+                else{
+                    communicator.send("Error");
+                }
             }
+
             System.out.println("Authenticated");
+
+            while (authenticated) {
+                String message = communicator.receive();
+                System.out.println(message);
+            }
+
             in.close();
             out.close();
             socket.close();
