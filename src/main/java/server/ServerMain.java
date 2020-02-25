@@ -36,9 +36,11 @@ public class ServerMain {
 
 		try {
 			ServerSocketFactory ssf = SocketFactory.getServerSocketFactory(type, KeyStorePassword);
-			ServerSocket ss = ssf.createServerSocket(port);
+			SSLServerSocket ss =  (SSLServerSocket) ssf.createServerSocket(port);
+			//ss.setEnabledCipherSuites(new String[] {"TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384"});
+			ss.setNeedClientAuth(false); // disables client authentication
+
 			new NetworkHandler(ss);
-			((SSLServerSocket)ss).setNeedClientAuth(false); // disables client authentication
 		} catch (IOException e) {
 			System.out.println("Unable to start Server: " + e.getMessage());
 			e.printStackTrace();

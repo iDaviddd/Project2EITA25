@@ -5,6 +5,7 @@ import utility.Communicator;
 import javax.net.ssl.*;
 import java.io.*;
 import java.security.KeyStore;
+import java.util.Arrays;
 
 
 public class NetworkHandler {
@@ -28,7 +29,9 @@ public class NetworkHandler {
             } catch (Exception e) {
                 throw new IOException(e.getMessage());
             }
-            SSLSocket socket = (SSLSocket)factory.createSocket(host, port);
+            SSLSocket socket = (SSLSocket) factory.createSocket(host, port);
+            socket.setEnabledCipherSuites(new String[] {"TLS_DHE_DSS_WITH_AES_256_CBC_SHA256"});
+
             System.out.println("\nsocket before handshake:\n" + socket + "\n");
             socket.startHandshake();
             System.out.println("secure connection established\n\n");

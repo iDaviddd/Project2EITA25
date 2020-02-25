@@ -16,13 +16,12 @@ public class SocketFactory {
                 SSLContext ctx = SSLContext.getInstance("TLS");
                 KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
                 KeyStore ks = KeyStore.getInstance("JKS");
-
                 ks.load(new FileInputStream("serverkeystore"), password.toCharArray());  // keystore password (storepass)
-
                 kmf.init(ks, password.toCharArray()); // certificate password (keypass)
 
                 ctx.init(kmf.getKeyManagers(), null, null);
                 ssf = ctx.getServerSocketFactory();
+
                 return ssf;
             } catch (Exception e) {
                 e.printStackTrace();

@@ -25,7 +25,6 @@ public class NetworkHandler implements Runnable {
 
             SSLSocket socket = (SSLSocket) serverSocket.accept();
             newListener();
-            SSLSession session = socket.getSession();
             numConnectedClients++;
             System.out.println("client connected");
             System.out.println(numConnectedClients + " concurrent connection(s)\n");
@@ -34,7 +33,6 @@ public class NetworkHandler implements Runnable {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             Communicator communicator = new Communicator(in, out);
-
             boolean authenticated = LoginHandler.login(communicator);
 
 
