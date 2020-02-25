@@ -5,6 +5,7 @@ import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Hex;
 import server.ServerMain;
 import utility.Communicator;
+import utility.Hasher;
 import utility.User;
 
 import java.util.List;
@@ -40,7 +41,9 @@ public class LoginHandler {
 
         User user = users.get(0);
         System.out.println("OTP: " + getTOTPCode(user.getOtpSecret()));
-        if(!user.getPassword().equals(password))
+
+        String hashedPassword = Hasher.HashPassword(password,user.getSalt());
+        if(!user.getPassword().equals(hashedPassword))
             return false;
 
         if(!getTOTPCode(user.getOtpSecret()).equals(OTP))

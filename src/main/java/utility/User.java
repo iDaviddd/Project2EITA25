@@ -35,7 +35,7 @@ public class User {
 		this.salt = salt;
 		this.division = division;
 
-		this.otpSecret = generateSecretKey();
+		this.otpSecret = generateSecretKey(20);
 	}
 
 	public String getName() {
@@ -76,9 +76,9 @@ public class User {
 		}
 	}
 
-	private  String generateSecretKey() {
+	public static String generateSecretKey(Integer length) {
 		SecureRandom random = new SecureRandom();
-		byte[] bytes = new byte[20];
+		byte[] bytes = new byte[length];
 		random.nextBytes(bytes);
 		Base32 base32 = new Base32();
 		return base32.encodeToString(bytes);

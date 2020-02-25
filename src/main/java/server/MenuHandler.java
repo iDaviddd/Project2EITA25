@@ -1,6 +1,7 @@
 package server;
 
 import server.database.DatabaseHandler;
+import utility.Hasher;
 import utility.User;
 
 import java.util.Scanner;
@@ -26,13 +27,14 @@ public class MenuHandler {
                 System.out.print("Personal Number(XXXXXXXX-XXXX): ");
                 String personal_number = in.nextLine();
                 System.out.print("Password: ");
-                String password = in.nextLine();
+                String salt = User.generateSecretKey(64);
+                String password = Hasher.HashPassword(in.nextLine(),  salt);
                 String division = "";
                 if(role.equalsIgnoreCase("doctor") || role.equalsIgnoreCase("nurse")) {
                     System.out.print("Division: ");
                     division = in.nextLine();
                 }
-                User newuser = new User(name, role, personal_number, password, "salt", division);
+                User newuser = new User(name, role, personal_number, password, salt, division);
 
                 databaseHandler.addUser(newuser);
                 System.out.println(name + " has been added to the system. ");
