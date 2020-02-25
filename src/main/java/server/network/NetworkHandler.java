@@ -4,7 +4,8 @@ import javax.net.ssl.*;
 import java.io.*;
 import java.net.ServerSocket;
 
-import utility.Communicator;
+import com.google.gson.Gson;
+import utility.*;
 
 
 public class NetworkHandler implements Runnable {
@@ -35,6 +36,7 @@ public class NetworkHandler implements Runnable {
             Communicator communicator = new Communicator(in, out);
 
             boolean authenticated = LoginHandler.login(communicator);
+
 
             while (authenticated) {
                 String message = communicator.receive();

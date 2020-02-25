@@ -11,7 +11,7 @@ public class NetworkHandler {
     private static SSLSocket socket;
     private static PrintWriter out;
     private static BufferedReader in;
-    private static Communicator communicator;
+    public static Communicator communicator;
 
     public NetworkHandler(String host, int port){
         try { /* set up a key manager for client authentication */

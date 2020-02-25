@@ -13,43 +13,36 @@ import java.util.List;
 public class LoginHandler {
 
     static boolean login(Communicator communicator){
-        boolean authenticated = false;
         while (true) {
             String username = communicator.receive();
-            String password = communicator.receive();
+            User user = findUser(username);
+
+            communicator.send(user.getSalt());
+            String challenge = User.generateSecretKey(32);
+            communicator.send(challenge);
+            String response = Hasher.HashPassword(user.getPassword(), challenge);
+            String clientResponse = communicator.receive();
             String OTP = communicator.receive();
 
-            System.out.println("username: " + username);
-            System.out.println("password: " + password);
-            System.out.println("-------------");
-            if(LoginHandler.testUserCreditials(username,password,OTP)){
+            if(LoginHandler.testUserCreditials(user,response,clientResponse,OTP)){
                 communicator.send("Authenticated");
                 System.out.println("Authenticated");
                 return true;
             }
             else{
                 communicator.send("Error");
-                return false;
             }
         }
     }
 
-
-    static boolean testUserCreditials(String username, String password, String OTP){
-        List<User> users = ServerMain.databaseHandler.findUsers("personal_number", username);
-        if(users.size() != 1) return false;
-
-        User user = users.get(0);
+    static boolean testUserCreditials(User user, String response, String clientResponse, String OTP){
         System.out.println("OTP: " + getTOTPCode(user.getOtpSecret()));
 
-        String hashedPassword = Hasher.HashPassword(password,user.getSalt());
-        if(!user.getPassword().equals(hashedPassword))
+        if(!response.equals(clientResponse))
             return false;
 
         if(!getTOTPCode(user.getOtpSecret()).equals(OTP))
             return false;
-
-        System.out.println(users);
 
         return true;
     }
@@ -60,4 +53,11 @@ public class LoginHandler {
         String hexKey = Hex.encodeHexString(bytes);
         return TOTP.getOTP(hexKey);
     }
+
+    public static User findUser(String username){
+        List<User> users = ServerMain.databaseHandler.findUsers("personal_number", username);
+        if(users.size() != 1) return null;
+        return users.get(0);
+    }
+
 }

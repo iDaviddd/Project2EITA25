@@ -1,18 +1,17 @@
 package client.gui;
 
 import client.network.NetworkHandler;
+import utility.Hasher;
+import utility.RequestHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-import utility.Communicator;
 
 import java.io.IOException;
 
@@ -60,30 +59,30 @@ public class LoginView {
         loginButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                try {
-                    boolean authenticated = false;
+                boolean authenticated = false;
+
+                NetworkHandler.communicator.send(username.getText());
+                String salt = NetworkHandler.communicator.receive();
+                String challenge = NetworkHandler.communicator.receive();
+
+                String hashedPassword = Hasher.HashPassword(password.getText(), salt);
+
+                String response = Hasher.HashPassword(hashedPassword, challenge);
+
+                NetworkHandler.communicator.send(response);
+                NetworkHandler.communicator.send(OTP.getText());
 
 
 
-                    NetworkHandler.SendRequest(username.getText());
-                    NetworkHandler.SendRequest(password.getText());
-                    NetworkHandler.SendRequest(OTP.getText());
-
-                    String response = NetworkHandler.receive();
-
-                    if(response.equals("Authenticated")){
-                        viewController.switchScene("records");
-                    }
-                    else{
-                        Alert a = new Alert(Alert.AlertType.ERROR);
-                        a.setContentText("Wrong username, password or OTP");
-                        a.show();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if(NetworkHandler.communicator.receive().equals("Authenticated")){
+                    System.out.println("Authenticated");
+                    viewController.switchScene("records");
                 }
-
-
+                else{
+                    Alert a = new Alert(Alert.AlertType.ERROR);
+                    a.setContentText("Wrong username, password or OTP");
+                    a.show();
+                }
             }
         });
 
