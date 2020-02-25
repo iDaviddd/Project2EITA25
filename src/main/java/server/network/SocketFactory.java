@@ -1,4 +1,4 @@
-package server;
+package server.network;
 
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.KeyManagerFactory;
@@ -9,18 +9,17 @@ import java.security.KeyStore;
 
 public class SocketFactory {
 
-    static ServerSocketFactory getServerSocketFactory(String type) {
+    public static ServerSocketFactory getServerSocketFactory(String type, String password) {
         if (type.equals("TLS")) {
             SSLServerSocketFactory ssf = null;
             try {
                 SSLContext ctx = SSLContext.getInstance("TLS");
                 KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
                 KeyStore ks = KeyStore.getInstance("JKS");
-                char[] password = "password".toCharArray();
 
-                ks.load(new FileInputStream("serverkeystore"), password);  // keystore password (storepass)
+                ks.load(new FileInputStream("serverkeystore"), password.toCharArray());  // keystore password (storepass)
 
-                kmf.init(ks, password); // certificate password (keypass)
+                kmf.init(ks, password.toCharArray()); // certificate password (keypass)
 
                 ctx.init(kmf.getKeyManagers(), null, null);
                 ssf = ctx.getServerSocketFactory();

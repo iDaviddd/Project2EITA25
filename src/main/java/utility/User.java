@@ -1,4 +1,4 @@
-package server;
+package utility;
 
 import org.apache.commons.codec.binary.Base32;
 

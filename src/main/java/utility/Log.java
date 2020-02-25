@@ -1,4 +1,6 @@
-package server;
+package utility;
+
+import server.ActionType;
 
 import java.sql.Timestamp;
 

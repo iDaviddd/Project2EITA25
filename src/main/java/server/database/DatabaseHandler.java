@@ -12,10 +12,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import server.ActionType;
-import server.Log;
-import server.Record;
-import server.User;
+import utility.Log;
+import utility.Record;
+import utility.User;
 
 public class DatabaseHandler {
 
