@@ -59,8 +59,6 @@ public class LoginView {
         loginButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                boolean authenticated = false;
-
                 NetworkHandler.communicator.send(username.getText());
                 String salt = NetworkHandler.communicator.receive();
                 String challenge = NetworkHandler.communicator.receive();
