@@ -1,7 +1,5 @@
 package utility;
 
-import server.ActionType;
-
 import java.sql.Timestamp;
 
 public class Log {
