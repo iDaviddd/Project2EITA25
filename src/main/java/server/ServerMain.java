@@ -15,8 +15,7 @@ public class ServerMain {
 	public static DatabaseHandler databaseHandler;
 	
 	private static boolean running;
-	// /Users/dohrbom/java-workspace/EITA25_Project_2/database/database.db
-	
+
 	public static void main(String[] args) {
 		System.out.println("Starting server...");
 		
