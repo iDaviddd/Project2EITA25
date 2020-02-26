@@ -44,7 +44,7 @@ public class MenuHandler {
                 String col = in.nextLine();
                 System.out.print("Enter the info(If you entered name, type a name):");
                 String search_term = in.nextLine();
-                databaseHandler.findUsers(col, search_term);
+                System.out.println(databaseHandler.findUsers(col, search_term).toString());
                 break;
             case "help":
                 System.out.println("--------- HELP --------");
