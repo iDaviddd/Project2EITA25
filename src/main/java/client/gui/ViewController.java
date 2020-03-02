@@ -34,4 +34,9 @@ public class ViewController extends Stage {
         views.get(viewName).update();
         this.scene.setRoot(views.get(viewName).getParent());
     }
+
+    void switchScene(String viewName, boolean update) {
+        if(update)  views.get(viewName).update();
+        this.scene.setRoot(views.get(viewName).getParent());
+    }
 }

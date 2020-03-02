@@ -96,7 +96,6 @@ public class LoginView implements View{
         }
 
         String hashedPassword = Hasher.HashPassword(password, (String) salt.data);
-
         String response = Hasher.HashPassword(hashedPassword, (String) challenge.data);
 
         NetworkHandler.communicator.send(new Request("challenge response", "post", response));
@@ -105,7 +104,6 @@ public class LoginView implements View{
         Request authentication = NetworkHandler.communicator.receive();
         return authentication.type.equals("authentication") && authentication.data.equals("true");
     }
-
 
     @Override
     public void update() {

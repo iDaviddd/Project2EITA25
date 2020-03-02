@@ -65,6 +65,7 @@ public class MenuHandler {
                 Record r = new Record(patient_personal_number, doctor_personal_number, nurse_personal_number, division, record_description);
                 databaseHandler.addRecord(r);
                 System.out.println("Record has been successfully added. ");
+                break;
             case "help":
                 System.out.println("--------- HELP --------");
                 System.out.println("help - print this message");
@@ -73,6 +74,7 @@ public class MenuHandler {
                 System.out.println("printr - prints all registered records in database");
                 System.out.println("create - Create a user");
                 System.out.println("find - Search the user table for a user");
+                System.out.println("add_record - Add a record");
                 break;
             default:
                 System.out.println("Unknown command. Type 'help' for help.");

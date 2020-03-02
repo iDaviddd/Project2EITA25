@@ -48,9 +48,11 @@ public class RecordView implements View{
         Button chooseButton = new Button("Choose");
         chooseButton.setDisable(true);
 
+        Button backButton = new Button("Back");
 
         borderPane.setTop(labelBox);
         borderPane.setBottom(chooseButton);
+        borderPane.setBottom(backButton);
 
         parent = borderPane;
 
@@ -71,6 +73,13 @@ public class RecordView implements View{
                 viewController.switchScene("detail");
             }
         });
+
+        backButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                viewController.switchScene("patients", false);
+            }
+        });
     }
 
     public Parent getParent(){
@@ -79,7 +88,7 @@ public class RecordView implements View{
 
     @Override
     public void update() {
-
+        System.out.println("Updating records");
         NetworkHandler.communicator.send(new Request("records", "get", ""));
 
         Request response = NetworkHandler.communicator.receive();
