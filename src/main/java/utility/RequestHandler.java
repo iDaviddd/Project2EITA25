@@ -3,6 +3,7 @@ package utility;
 import client.network.NetworkHandler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sun.security.ntlm.Server;
 import server.ServerMain;
 import server.database.DatabaseHandler;
 
@@ -25,12 +26,16 @@ public class RequestHandler {
 
 
         if (type.equals("records") && actionType.equals("get")) {
-
+            // Lists records for selectedRecordUser
             List<Record> records = getRecordsOfUser(selectedRecordUser);
             System.out.println("RECORDS:");
             System.out.println(records);
             communicator.send(new Request("records", "get", true, "start"));
-            records.forEach(a -> communicator.send(new Request("records", "get", true, a.getRecordId().toString())));
+            records.forEach(a -> {
+                Log log = new Log(user.getPersonalNumber(), a.getRecordId(), ActionType.LIST_RECORD.toString(), user.getName() + " listed this record.");
+                ServerMain.databaseHandler.addLog(log);
+                communicator.send(new Request("records", "get", true, a.getRecordId().toString()));
+            });
             communicator.send(new Request("records", "get", true, null));
         }
         if(type.equals("users") && actionType.equals("get") && data.equals("patients")){

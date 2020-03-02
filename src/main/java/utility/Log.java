@@ -60,6 +60,7 @@ public class Log {
                 break;
             case "list_all_users":
                 at = ActionType.LIST_ALL_USERS;
+                break;
             case "create_record":
                 at = ActionType.CREATE_RECORD;
                 break;
@@ -72,8 +73,8 @@ public class Log {
             case "remove_record":
                 at = ActionType.REMOVE_RECORD;
                 break;
-            case "list_records":
-                at = ActionType.LIST_RECORDS;
+            case "list_record":
+                at = ActionType.LIST_RECORD;
                 break;
             default:
                 break;
