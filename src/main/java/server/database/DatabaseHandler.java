@@ -179,8 +179,9 @@ public class DatabaseHandler {
                 String nurse_personal_number = rs.getString("nurse_personal_number");
                 String division = rs.getString("division");
                 String record = rs.getString("record");
+                Integer record_id = rs.getInt("record_id");
                 Record r = new Record(patient_personal_number, doctor_personal_number, nurse_personal_number, division,
-                        record);
+                        record, record_id);
                 list.add(r);
                 System.out.println(r);
             }
