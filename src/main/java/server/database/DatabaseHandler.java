@@ -155,7 +155,6 @@ public class DatabaseHandler {
                 String otpSecret = rs.getString("otp_secret");
                 User user = new User(name, role, personal_number, password, salt, division, id, otpSecret);
                 users.add(user);
-                //System.out.println(user);
             }
 
         } catch (SQLException e) {

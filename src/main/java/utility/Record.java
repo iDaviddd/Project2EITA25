@@ -48,7 +48,7 @@ public class Record {
         return record;
     }
 
-    public int getRecordId() {
+    public Integer getRecordId() {
         if (record_id == null) {
             return -1;
         } else {
