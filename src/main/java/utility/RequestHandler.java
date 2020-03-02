@@ -41,10 +41,32 @@ public class RequestHandler {
             communicator.send(new Request("users", "get", true, null));
         }
         if(type.equals("record") && actionType.equals("get")){
-            communicator.send(new Request("record", "get", true, selectedRecord.getRecord()));
-            communicator.send(new Request("record", "get", true, selectedRecord.getPatientPersonalNumber()));
+            List<User> patients = ServerMain.databaseHandler.findUsers("personal_number", selectedRecord.getPatientPersonalNumber());
+            List<User> doctors = ServerMain.databaseHandler.findUsers("personal_number", selectedRecord.getDoctorPersonalNumber());
+            List<User> nurses = ServerMain.databaseHandler.findUsers("personal_number", selectedRecord.getNursePersonalNumber());
 
-        }
+            String patientName = "";
+            String doctorName = "";
+            String nuseName = "";
+
+            if(patients.size() == 1 && doctors.size() == 1 && nurses.size() == 1){
+                patientName = patients.get(0).getName();
+                doctorName = doctors.get(0).getName();
+                nuseName = nurses.get(0).getName();
+            }
+
+            communicator.send(new Request("record", "get", true, selectedRecord.getPatientPersonalNumber()));
+            communicator.send(new Request("record", "get", true, patientName));
+
+            communicator.send(new Request("record", "get", true, selectedRecord.getDoctorPersonalNumber()));
+            communicator.send(new Request("record", "get", true, doctorName));
+
+            communicator.send(new Request("record", "get", true, selectedRecord.getNursePersonalNumber()));
+            communicator.send(new Request("record", "get", true, nuseName));
+
+            communicator.send(new Request("record", "get", true, selectedRecord.getRecord()));
+            }
+
         if (type.equals("selectRecordUser") && actionType.equals("post")) {
             System.out.println("SELECTED RECORD USeR");
             List<User> users = ServerMain.databaseHandler.findUsers("personal_number", (String) data);
