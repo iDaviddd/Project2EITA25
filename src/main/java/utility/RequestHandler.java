@@ -33,6 +33,7 @@ public class RequestHandler {
             communicator.send(new Request("records", "get", true, null));
         }
         if(type.equals("users") && actionType.equals("get") && data.equals("patients")){
+            // Returns a list of all patients.
             List<User> patients = getPatients();
             System.out.println(patients);
             communicator.send(new Request("users", "get", true, "start"));
