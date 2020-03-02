@@ -51,8 +51,11 @@ public class RecordView implements View{
         Button backButton = new Button("Back");
 
         borderPane.setTop(labelBox);
-        borderPane.setBottom(chooseButton);
-        borderPane.setBottom(backButton);
+        HBox buttonBox = new HBox();
+        buttonBox.getChildren().add(backButton);
+        buttonBox.getChildren().add(chooseButton);
+
+        borderPane.setBottom(buttonBox);
 
         parent = borderPane;
 
@@ -69,8 +72,13 @@ public class RecordView implements View{
         chooseButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                recordChosen = listView.getSelectionModel().getSelectedItem();
-                viewController.switchScene("detail");
+                NetworkHandler.communicator.send(new Request("selectRecord", "post", listView.getSelectionModel().getSelectedItem()));
+                if(NetworkHandler.communicator.receive().data.equals("success")){
+                    viewController.switchScene("detail");
+                }
+                else{
+                    //failed
+                }
             }
         });
 
@@ -88,7 +96,6 @@ public class RecordView implements View{
 
     @Override
     public void update() {
-        System.out.println("Updating records");
         NetworkHandler.communicator.send(new Request("records", "get", ""));
 
         Request response = NetworkHandler.communicator.receive();
