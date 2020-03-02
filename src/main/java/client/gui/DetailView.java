@@ -22,6 +22,9 @@ public class DetailView implements View {
     private TextField doctorText;
     private TextField nurseText;
     private TextArea recordText;
+    private VBox bodyBox;
+    private Button saveButton;
+
 
 
     DetailView(ViewController viewController) {
@@ -61,7 +64,7 @@ public class DetailView implements View {
             }
         });
 
-        Button saveButton = new Button("Save");
+        saveButton = new Button("Save");
         saveButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -70,14 +73,8 @@ public class DetailView implements View {
         });
 
         BorderPane borderPane = new BorderPane();
-        VBox bodyBox = new VBox();
+        bodyBox = new VBox();
         bodyBox.getChildren().addAll(recordText, backButton);
-
-        if(!ViewController.role.equals("Doctor") && !ViewController.role.equals("Nurse")){
-            recordText.editableProperty().setValue(false);
-            bodyBox.getChildren().add(saveButton);
-        }
-
 
         borderPane.setTop(headerBox);
         borderPane.setCenter(bodyBox);
@@ -92,7 +89,11 @@ public class DetailView implements View {
 
     @Override
     public void update() {
-        System.out.println("Role: " + ViewController.role);
+        if(!ViewController.role.equals("Doctor") && !ViewController.role.equals("Nurse") && !bodyBox.getChildren().contains(saveButton)){
+            recordText.editableProperty().setValue(false);
+            bodyBox.getChildren().add(saveButton);
+        }
+
         NetworkHandler.communicator.send(new Request("record", "get", ""));
 
         String patientName = NetworkHandler.communicator.receive().data;

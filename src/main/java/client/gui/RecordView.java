@@ -28,6 +28,8 @@ public class RecordView implements View{
     private Parent parent;
     private String recordChosen;
     private ObservableList<String> recordsString = FXCollections.observableArrayList();
+    private HBox buttonBox;
+    private Button newRecordButton;
 
     RecordView(ViewController viewController){
         Label label = new Label("Records");
@@ -49,11 +51,14 @@ public class RecordView implements View{
         chooseButton.setDisable(true);
 
         Button backButton = new Button("Back");
+        newRecordButton = new Button("New record");
 
         borderPane.setTop(labelBox);
-        HBox buttonBox = new HBox();
+        buttonBox = new HBox();
         buttonBox.getChildren().add(backButton);
         buttonBox.getChildren().add(chooseButton);
+        System.out.println();
+
 
         borderPane.setBottom(buttonBox);
 
@@ -88,6 +93,13 @@ public class RecordView implements View{
                 viewController.switchScene("patients", false);
             }
         });
+
+        newRecordButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                viewController.switchScene("create", false);
+            }
+        });
     }
 
     public Parent getParent(){
@@ -96,6 +108,10 @@ public class RecordView implements View{
 
     @Override
     public void update() {
+        if(ViewController.role.equals("Doctor") && !buttonBox.getChildren().contains(newRecordButton)){
+            buttonBox.getChildren().add(newRecordButton);
+        }
+
         NetworkHandler.communicator.send(new Request("records", "get", ""));
 
         Request response = NetworkHandler.communicator.receive();

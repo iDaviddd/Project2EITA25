@@ -16,7 +16,9 @@ public class RequestHandler {
     static GsonBuilder builder = new GsonBuilder();
     static Gson gson = builder.create();
     private User selectedRecordUser = null;
+    private User selectedNurse = null;
     private Record selectedRecord = null;
+
 
     public void processRequest(Request request, User user, Communicator communicator) {
 
@@ -101,6 +103,12 @@ public class RequestHandler {
             //update record
            String newRecordText = data;
         }
+        else if (type.equals("add_record") && actionType.equals("post")){
+            if(user.getRole().equals("Doctor")){
+                Record record = new Record(selectedRecordUser.getPersonalNumber(), user.getPersonalNumber(), selectedNurse.getPersonalNumber(), user.getDivision(), data);
+                ServerMain.databaseHandler.addRecord(record);
+            }
+        }
         else if (type.equals("selectRecordUser") && actionType.equals("post")) {
             System.out.println("SELECTED RECORD USeR");
             List<User> users = ServerMain.databaseHandler.findUsers("personal_number", data);
@@ -117,6 +125,14 @@ public class RequestHandler {
             }
             selectedRecord = records.get(0);
             communicator.send(new Request("selectRecord", "post", true, "success"));
+        }
+        else if (type.equals("selectNurse") && actionType.equals("post")) {
+            List<User> nurses = ServerMain.databaseHandler.findUsers("personal_number", data);
+            if (nurses.size() != 1) {
+                communicator.send(new Request("selectedRecordUser", "post", true, "failed"));
+            }
+            selectedNurse = nurses.get(0);
+            communicator.send(new Request("selectedRecordUser", "post", true, "success"));
         }
 
     }
