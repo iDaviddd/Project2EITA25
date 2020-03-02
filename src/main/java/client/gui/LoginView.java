@@ -102,7 +102,11 @@ public class LoginView implements View{
         NetworkHandler.communicator.send(new Request("OTP", "post", OTP));
 
         Request authentication = NetworkHandler.communicator.receive();
-        return authentication.type.equals("authentication") && authentication.data.equals("true");
+        if(authentication.type.equals("authentication") && authentication.data.equals("true")){
+            ViewController.role = NetworkHandler.communicator.receive().data;
+            return true;
+        }
+        return false;
     }
 
     @Override
