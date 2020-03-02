@@ -26,7 +26,7 @@ public class ServerMain {
 
 		System.out.print("Enter path to database file: ");
 		//String pathToDataBase = in.nextLine();
-		String pathToDataBase = "database/database.db";
+		String pathToDataBase = "live.db";
 
 		System.out.print("Enter password to keystore: ");
 		//String KeyStorePassword = in.nextLine();

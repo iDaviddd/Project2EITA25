@@ -29,15 +29,40 @@ public class RequestHandler {
         if (type.equals("records") && actionType.equals("get")) {
             System.out.println(selectedRecordUser);
             List<Record> records = getRecordsOfUser(this.selectedRecordUser);
+
+
             communicator.send(new Request("records", "get", true, "start"));
             records.forEach(a -> {
-                Log log = new Log(user.getPersonalNumber(), a.getRecordId(), ActionType.LIST_RECORD.toString(), user.getName() + " listed this record.");
-                ServerMain.databaseHandler.addLog(log);
-                communicator.send(new Request("records", "get", true, a.getRecordId().toString()));
+                boolean send = false;
+                switch (user.getRole()) {
+                    case "Doctor":
+                        if (a.getDoctorPersonalNumber().equals(user.getPersonalNumber()) || a.getDivision().equals(user.getDivision()))
+                            send = true;
+                        break;
+                    case "Nurse":
+                    if (a.getNursePersonalNumber().equals(user.getPersonalNumber()) || a.getDivision().equals(user.getDivision()))
+                        send = true;
+                    break;
+                    case "Patient":
+                        if (a.getPatientPersonalNumber().equals(user.getPersonalNumber()))
+                            send = true;
+                        break;
+                    case "Government":
+                        send = true;
+                        break;
+                    default:
+                        break;
+                }
+                if(send) {
+                    Log log = new Log(user.getPersonalNumber(), a.getRecordId(), ActionType.LIST_RECORD.toString(), user.getName() + " listed this record.");
+                    ServerMain.databaseHandler.addLog(log);
+                    communicator.send(new Request("records", "get", true, a.getRecordId().toString()));
+                }
             });
+
             communicator.send(new Request("records", "get", true, null));
         }
-        if(type.equals("users") && actionType.equals("get") && data.equals("patients")){
+        if (type.equals("users") && actionType.equals("get") && data.equals("patients")) {
             // Returns a list of all patients.
             List<User> patients = getPatients();
             System.out.println(patients);
@@ -45,7 +70,7 @@ public class RequestHandler {
             patients.forEach(a -> communicator.send(new Request("users", "get", true, a.getPersonalNumber())));
             communicator.send(new Request("users", "get", true, null));
         }
-        if(type.equals("record") && actionType.equals("get")){
+        if (type.equals("record") && actionType.equals("get")) {
             List<User> patients = ServerMain.databaseHandler.findUsers("personal_number", selectedRecord.getPatientPersonalNumber());
             List<User> doctors = ServerMain.databaseHandler.findUsers("personal_number", selectedRecord.getDoctorPersonalNumber());
             List<User> nurses = ServerMain.databaseHandler.findUsers("personal_number", selectedRecord.getNursePersonalNumber());
@@ -54,7 +79,7 @@ public class RequestHandler {
             String doctorName = "";
             String nuseName = "";
 
-            if(patients.size() == 1 && doctors.size() == 1 && nurses.size() == 1){
+            if (patients.size() == 1 && doctors.size() == 1 && nurses.size() == 1) {
                 patientName = patients.get(0).getName();
                 doctorName = doctors.get(0).getName();
                 nuseName = nurses.get(0).getName();
@@ -70,7 +95,7 @@ public class RequestHandler {
             communicator.send(new Request("record", "get", true, nuseName));
 
             communicator.send(new Request("record", "get", true, selectedRecord.getRecord()));
-            }
+        }
 
         if (type.equals("selectRecordUser") && actionType.equals("post")) {
             System.out.println("SELECTED RECORD USeR");
