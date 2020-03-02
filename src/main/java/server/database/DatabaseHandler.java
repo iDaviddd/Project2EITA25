@@ -65,7 +65,7 @@ public class DatabaseHandler {
     }
 
     public void addRecord(Record r) {
-        String sql = "INSERT INTO records(patient_personal_number, doctor_personal_number, nurse_personal_number, divison, record) VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO records(patient_personal_number, doctor_personal_number, nurse_personal_number, division, record) VALUES(?,?,?,?,?)";
 
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
