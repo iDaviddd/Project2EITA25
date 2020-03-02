@@ -20,6 +20,10 @@ public class MenuHandler {
                 System.out.println("All users registered in database:");
                 databaseHandler.printAllUsers();
                 break;
+            case "printr":
+                System.out.println("All records registered in database:");
+                databaseHandler.printAllRecords();
+                break;
             case "create":
                 System.out.print("Name: ");
                 String name = in.nextLine();
@@ -66,6 +70,7 @@ public class MenuHandler {
                 System.out.println("help - print this message");
                 System.out.println("quit - close the server");
                 System.out.println("print - print all registered users in database");
+                System.out.println("printr - prints all registered records in database");
                 System.out.println("create - Create a user");
                 System.out.println("find - Search the user table for a user");
                 break;
