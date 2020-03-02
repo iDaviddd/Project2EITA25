@@ -1,5 +1,6 @@
 package client.gui;
 
+import javafx.beans.value.ObservableStringValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,12 +16,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 import javax.xml.soap.Detail;
+import java.util.Observable;
 
-public class DetailView {
+public class DetailView implements View{
     private Parent parent;
     private String patientName = "John Doe";
 
-    DetailView(ViewController viewController){
+    DetailView(ViewController viewController) {
 
 
 
@@ -55,5 +57,10 @@ public class DetailView {
 
     public Parent getParent(){
         return parent;
+    }
+
+    @Override
+    public void update() {
+        System.out.println();
     }
 }

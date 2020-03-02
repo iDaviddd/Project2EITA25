@@ -3,8 +3,11 @@ package utility;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSyntaxException;
 
 public class Communicator {
@@ -32,7 +35,7 @@ public class Communicator {
         writer.flush();
     }
 
-    public Request receive() {
+    public Request receive(){
         Gson gson = new Gson();
 
         Request result = null;
@@ -57,4 +60,13 @@ public class Communicator {
         }
         return result;
     }
+
+    public List receive(JsonDeserializer deserializer) throws IOException {
+        Gson gson = new GsonBuilder().registerTypeAdapter(List.class, deserializer).create();
+
+        List list = gson.fromJson(reader.readLine(), List.class);
+        return list;
+    }
+
+
 }

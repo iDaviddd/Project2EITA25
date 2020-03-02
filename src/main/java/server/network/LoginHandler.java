@@ -21,7 +21,7 @@ public class LoginHandler {
                 return null;
             }
 
-            User user = findUser(username.data);
+            User user = findUser((String) username.data);
             if(user == null){
                 System.out.println("User not found");
                 communicator.send(new Request("authentication", "post", "false"));
@@ -49,7 +49,7 @@ public class LoginHandler {
                 return null;
             }
 
-            if(LoginHandler.testUserCreditials(user,response,clientResponse.data,OTP.data)){
+            if(LoginHandler.testUserCreditials(user,response,(String) clientResponse.data, (String) OTP.data)){
                 communicator.send(new Request("authentication", "post", "true"));
                 System.out.println("Authenticated");
                 return user;

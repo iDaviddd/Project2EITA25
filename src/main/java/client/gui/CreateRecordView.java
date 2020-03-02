@@ -11,20 +11,15 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 
-public class CreateRecordView {
+public class CreateRecordView implements View{
     private Parent parent;
 
     CreateRecordView(ViewController viewController){
-
-
-
 
         Label label = new Label("Create record");
         label.setTextAlignment(TextAlignment.CENTER);
         label.setFont(new Font(label.getFont().getName(), 20));
         label.setPadding(new Insets(5,0,10,0));
-
-
 
         BorderPane borderPane = new BorderPane();
 
@@ -45,9 +40,6 @@ public class CreateRecordView {
         Label textRecord = new Label("Record");
         TextArea record = new TextArea();
 
-
-
-
         container.getChildren().addAll(textPatient, patient, textPersonalNumber, personalNumber, textNurse, nurse, textRecord, record, buttons);
 
 
@@ -56,6 +48,11 @@ public class CreateRecordView {
         parent = borderPane;
 
         viewController.setTitle("Create");
+    }
+
+    @Override
+    public void update() {
+
     }
 
     public Parent getParent(){

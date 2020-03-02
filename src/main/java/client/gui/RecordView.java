@@ -1,5 +1,8 @@
 package client.gui;
 
+import client.network.NetworkHandler;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,11 +18,16 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import utility.Request;
 
-public class RecordView {
+import java.util.ArrayList;
+import java.util.List;
+
+public class RecordView implements View{
 
     private Parent parent;
     private String recordChosen;
+    private ObservableList<String> recordsString = FXCollections.observableArrayList();
 
     RecordView(ViewController viewController){
         Label label = new Label("Records");
@@ -28,8 +36,7 @@ public class RecordView {
         label.setPadding(new Insets(5,0,10,0));
 
         ListView<String> listView = new ListView<>();
-        listView.getItems().add("Test 1");
-        listView.getItems().add("Test 2");
+        listView.setItems(recordsString);
         listView.setPrefHeight(150);
 
         BorderPane borderPane = new BorderPane();
@@ -68,5 +75,24 @@ public class RecordView {
 
     public Parent getParent(){
         return parent;
+    }
+
+    @Override
+    public void update() {
+
+        NetworkHandler.communicator.send(new Request("records", "get", ""));
+
+        Request response = NetworkHandler.communicator.receive();
+        List<String> records = new ArrayList<>();
+        if(response.type.equals("records") && response.actionType.equals("get") && response.reply  && response.data.equals("start")){
+            response = NetworkHandler.communicator.receive();
+            while (response.data != null){
+                records.add((String) response.data);
+                response = NetworkHandler.communicator.receive();
+            }
+        }
+        else{}
+
+        recordsString.setAll(records);
     }
 }

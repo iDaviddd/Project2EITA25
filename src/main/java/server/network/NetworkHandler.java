@@ -41,9 +41,7 @@ public class NetworkHandler implements Runnable {
 
             while (user != null) {
                 Request request = communicator.receive();
-
-                RequestHandler.processRequest(request, user);
-
+                RequestHandler.processRequest(request, user, communicator);
             }
 
             in.close();

@@ -17,16 +17,11 @@ import javafx.scene.text.TextAlignment;
 import java.io.IOException;
 
 
-public class LoginView {
+public class LoginView implements View{
 
     private Parent parent;
-    private String user;
-    private String pass;
 
     LoginView(ViewController viewController){
-
-
-
 
         Label label = new Label("Login");
         label.setTextAlignment(TextAlignment.CENTER);
@@ -51,8 +46,6 @@ public class LoginView {
         OTP.setPromptText("OTP");
         textOTP.setPadding(new Insets(10, 50, 0, 50));
 
-
-
         Button loginButton = new Button("Login");
 
         loginText.getChildren().addAll(textUsername, username, textPassword, password, textOTP, OTP,  loginButton);
@@ -63,7 +56,7 @@ public class LoginView {
 
                 if(login(username.getText(), password.getText(), OTP.getText())){
                     System.out.println("Authenticated");
-                    viewController.switchScene("records");
+                    viewController.switchScene("patients");
                 }
                 else{
                     Alert a = new Alert(Alert.AlertType.ERROR);
@@ -72,10 +65,6 @@ public class LoginView {
                 }
             }
         });
-
-
-
-
 
         borderPane.setCenter(loginText);
 
@@ -106,9 +95,9 @@ public class LoginView {
             return false;
         }
 
-        String hashedPassword = Hasher.HashPassword(password, salt.data);
+        String hashedPassword = Hasher.HashPassword(password, (String) salt.data);
 
-        String response = Hasher.HashPassword(hashedPassword, challenge.data);
+        String response = Hasher.HashPassword(hashedPassword, (String) challenge.data);
 
         NetworkHandler.communicator.send(new Request("challenge response", "post", response));
         NetworkHandler.communicator.send(new Request("OTP", "post", OTP));
@@ -118,4 +107,8 @@ public class LoginView {
     }
 
 
+    @Override
+    public void update() {
+
+    }
 }

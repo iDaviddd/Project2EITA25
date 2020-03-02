@@ -1,7 +1,8 @@
 package client.gui;
 
 import client.ClientMain;
-import javafx.scene.Parent;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -11,16 +12,18 @@ import java.util.Map;
 
 public class ViewController extends Stage {
     private Scene scene;
-    private Map<String, Parent> views = new HashMap<>();
+    public Map<String, View> views = new HashMap<>();
+    public ObservableMap<String, String> user = FXCollections.observableHashMap();
 
 
     public ViewController(ClientMain clientMain) {
 
-        views.put("login", new LoginView(this).getParent());
-        views.put("records", new RecordView(this).getParent());
-        views.put("detail", new DetailView(this).getParent());
-        views.put("create", new CreateRecordView(this).getParent());
-        scene = new Scene(views.get("login"), 300, 250);
+        views.put("login", new LoginView(this));
+        views.put("patients", new PatientsView(this));
+        views.put("records", new RecordView(this));
+        views.put("detail", new DetailView(this));
+        views.put("create", new CreateRecordView(this));
+        scene = new Scene(views.get("login").getParent(), 300, 250);
         this.setTitle("Title");
         this.setScene(scene);
         this.setResizable(true);
@@ -28,7 +31,7 @@ public class ViewController extends Stage {
     }
 
     void switchScene(String viewName) {
-        System.out.println(views.get(viewName));
-        this.scene.setRoot(views.get(viewName));
+        views.get(viewName).update();
+        this.scene.setRoot(views.get(viewName).getParent());
     }
 }

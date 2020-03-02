@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -163,8 +164,8 @@ public class DatabaseHandler {
 		return users;
 	}
 
-	public HashSet<Record> findRecords(String column, String search_term) {
-		HashSet<Record> set = new HashSet<Record>();
+	public List<Record> findRecords(String column, String search_term) {
+		List<Record> list = new ArrayList<>();
 
 		String sql = "SELECT * FROM records WHERE " + column + "='" + search_term + "';";
 
@@ -180,14 +181,14 @@ public class DatabaseHandler {
 				String record = rs.getString("record");
 				Record r = new Record(patient_personal_number, doctor_personal_number, nurse_personal_number, division,
 						record);
-				set.add(r);
+				list.add(r);
 				System.out.println(r);
 			}
 
 		} catch (SQLException e) {
 			System.out.println("Error" + e.getMessage());
 		}
-		return set;
+		return list;
 	}
 
 	public HashSet<Log> findLogs(String column, String search_term) {
