@@ -38,10 +38,10 @@ public class NetworkHandler implements Runnable {
                 user = LoginHandler.login(communicator);
             }
 
-
+            RequestHandler requestHandler = new RequestHandler();
             while (user != null) {
                 Request request = communicator.receive();
-                RequestHandler.processRequest(request, user, communicator);
+                requestHandler.processRequest(request, user, communicator);
             }
 
             in.close();

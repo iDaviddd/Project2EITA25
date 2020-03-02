@@ -15,9 +15,10 @@ public class RequestHandler {
 
     static GsonBuilder builder = new GsonBuilder();
     static Gson gson = builder.create();
-    private static User selectedRecordUser = null;
+    private User selectedRecordUser = null;
+    private Record selectedRecord = null;
 
-    public static void processRequest(Request request, User user, Communicator communicator) {
+    public void processRequest(Request request, User user, Communicator communicator) {
 
         String type = request.type;
         String actionType = request.actionType;
@@ -26,10 +27,8 @@ public class RequestHandler {
 
 
         if (type.equals("records") && actionType.equals("get")) {
-            // Lists records for selectedRecordUser
-            List<Record> records = getRecordsOfUser(selectedRecordUser);
-            System.out.println("RECORDS:");
-            System.out.println(records);
+            System.out.println(selectedRecordUser);
+            List<Record> records = getRecordsOfUser(this.selectedRecordUser);
             communicator.send(new Request("records", "get", true, "start"));
             records.forEach(a -> {
                 Log log = new Log(user.getPersonalNumber(), a.getRecordId(), ActionType.LIST_RECORD.toString(), user.getName() + " listed this record.");
@@ -46,14 +45,28 @@ public class RequestHandler {
             patients.forEach(a -> communicator.send(new Request("users", "get", true, a.getPersonalNumber())));
             communicator.send(new Request("users", "get", true, null));
         }
+        if(type.equals("record") && actionType.equals("get")){
+            communicator.send(new Request("record", "get", true, selectedRecord.getRecord()));
+            communicator.send(new Request("record", "get", true, selectedRecord.getPatientPersonalNumber()));
+
+        }
         if (type.equals("selectRecordUser") && actionType.equals("post")) {
+            System.out.println("SELECTED RECORD USeR");
             List<User> users = ServerMain.databaseHandler.findUsers("personal_number", (String) data);
-            System.out.println(users);
             if (users.size() != 1) {
                 communicator.send(new Request("selectedRecordUser", "post", true, "failed"));
             }
             selectedRecordUser = users.get(0);
             communicator.send(new Request("selectedRecordUser", "post", true, "success"));
+        }
+
+        if (type.equals("selectRecord") && actionType.equals("post")) {
+            List<Record> records = ServerMain.databaseHandler.findRecords("record_id", (String) data);
+            if (records.size() != 1) {
+                communicator.send(new Request("selectRecord", "post", true, "failed"));
+            }
+            selectedRecord = records.get(0);
+            communicator.send(new Request("selectRecord", "post", true, "success"));
         }
     }
 
@@ -63,7 +76,6 @@ public class RequestHandler {
     }
 
     private static List<Record> getRecordsOfUser(User user) {
-
         System.out.println("Records:");
         System.out.println("User:" + user);
         List<Record> records = null;

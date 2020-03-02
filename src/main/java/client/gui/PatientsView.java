@@ -64,8 +64,13 @@ public class PatientsView implements View{
             @Override
             public void handle(ActionEvent event) {
                 NetworkHandler.communicator.send(new Request("selectRecordUser", "post", listView.getSelectionModel().getSelectedItem()));
-                NetworkHandler.communicator.receive();
-                viewController.switchScene("records");
+                if(NetworkHandler.communicator.receive().data.equals("success")){
+                    viewController.switchScene("records");
+                }
+                else{
+                    //failed
+                }
+
 
             }
         });
@@ -77,7 +82,6 @@ public class PatientsView implements View{
 
     @Override
     public void update()  {
-        System.out.println("updating patient view");
         NetworkHandler.communicator.send(new Request("users", "get", "patients"));
 
         Request response = NetworkHandler.communicator.receive();
