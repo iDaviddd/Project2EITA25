@@ -2,6 +2,7 @@ package server;
 
 import server.database.DatabaseHandler;
 import utility.Hasher;
+import utility.Record;
 import utility.User;
 
 import java.util.Scanner;
@@ -46,6 +47,20 @@ public class MenuHandler {
                 String search_term = in.nextLine();
                 System.out.println(databaseHandler.findUsers(col, search_term).toString());
                 break;
+            case "add_record":
+                System.out.print("Patient personal number:");
+                String patient_personal_number = in.nextLine();
+                System.out.print("Doctor personal number:");
+                String doctor_personal_number = in.nextLine();
+                System.out.print("Nurse perosnal number:");
+                String nurse_personal_number = in.nextLine();
+                System.out.print("Division:");
+                division = in.nextLine();
+                System.out.print("Record description:");
+                String record_description = in.nextLine();
+                Record r = new Record(patient_personal_number, doctor_personal_number, nurse_personal_number, division, record_description);
+                databaseHandler.addRecord(r);
+                System.out.println("Record has been successfully added. ");
             case "help":
                 System.out.println("--------- HELP --------");
                 System.out.println("help - print this message");
