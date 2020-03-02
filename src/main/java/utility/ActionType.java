@@ -11,6 +11,6 @@ public enum ActionType {
 	READ_RECORD,
 	MODIFY_RECORD,
 	REMOVE_RECORD,
-	LIST_RECORDS
+	LIST_RECORD
 
 }

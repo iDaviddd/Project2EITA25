@@ -64,6 +64,10 @@ public class DatabaseHandler {
         }
     }
 
+    /**
+     * Record to be added to database.
+     * @param r to be added to database
+     */
     public void addRecord(Record r) {
         String sql = "INSERT INTO records(patient_personal_number, doctor_personal_number, nurse_personal_number, division, record) VALUES(?,?,?,?,?)";
 
@@ -80,6 +84,10 @@ public class DatabaseHandler {
         }
     }
 
+    /**
+     * Add a log to the database.
+     * @param log to be added to database
+     */
     public void addLog(Log log) {
 
         String sql = "INSERT INTO logs(user_personal_number, record_id, action_type, action) VALUES(?,?,?,?)";
@@ -97,6 +105,10 @@ public class DatabaseHandler {
 
     }
 
+    /**
+     * Add a user to the database.
+     * @param user object to be added to database.
+     */
     public void addUser(User user) {
         String sql = "INSERT INTO users(name, role, personal_number, password, salt, division, otp_secret) VALUES(?,?,?,?,?,?,?)";
 
@@ -122,6 +134,10 @@ public class DatabaseHandler {
         }
     }
 
+    /**
+     * Delete a user from the database.
+     * @param id of user to be deleted
+     */
     public void deleteUser(int id) {
         // Specify sql command
         String sql = "DELETE FROM users WHERE id='" + id + "';";
@@ -135,6 +151,12 @@ public class DatabaseHandler {
         }
     }
 
+    /**
+     * Find all users which fulfill the requirements.
+     * @param column to search for
+     * @param search_term to search for
+     * @return a set of all users which fulfill the requirements.
+     */
     public List<User> findUsers(String column, String search_term) {
         List<User> users = new LinkedList<>();
 
@@ -163,6 +185,12 @@ public class DatabaseHandler {
         return users;
     }
 
+    /**
+     * Find all records which fulfill the requirements.
+     * @param column to search for
+     * @param search_term to search for
+     * @return a set of all records which fulfill the requirements.
+     */
     public List<Record> findRecords(String column, String search_term) {
         List<Record> list = new ArrayList<>();
 
@@ -191,6 +219,12 @@ public class DatabaseHandler {
         return list;
     }
 
+    /**
+     * Find all logs which fulfill the requirements.
+     * @param column to search for
+     * @param search_term to search for
+     * @return a set of logs.
+     */
     public HashSet<Log> findLogs(String column, String search_term) {
         HashSet<Log> set = new HashSet<Log>();
 
@@ -219,6 +253,9 @@ public class DatabaseHandler {
         return set;
     }
 
+    /**
+     * Prints all users registered in database.
+     */
     public void printAllUsers() {
         String sql = "SELECT * FROM users";
 
@@ -237,6 +274,9 @@ public class DatabaseHandler {
         }
     }
 
+    /**
+     * Prints all records from database.
+     */
     public void printAllRecords() {
         String sql = "SELECT * FROM records";
 
@@ -249,6 +289,28 @@ public class DatabaseHandler {
                 System.out.println(rs.getInt("record_id") + "\t" + rs.getString("patient_personal_number") + "\t" + rs.getString("doctor_personal_number") + "\t"
                         + rs.getString("nurse_personal_number") + "\t" + rs.getString("division") + "\t"
                         + rs.getString("record"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Prints all logs from database.
+     */
+    public void printAllLogs() {
+        String sql = "SELECT * FROM logs";
+
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            //Loop through the result set
+            while (rs.next()) {
+                System.out.println(rs.getInt("log_id") + "\t" + rs.getString("timestamp").toString() + "\t" + rs.getString("user_personal_number") + "\t"
+                        + rs.getString("record_id") + "\t" + rs.getString("action_type") + "\t"
+                        + rs.getString("action"));
             }
 
         } catch (SQLException e) {

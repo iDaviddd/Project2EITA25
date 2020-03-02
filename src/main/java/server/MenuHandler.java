@@ -24,6 +24,10 @@ public class MenuHandler {
                 System.out.println("All records registered in database:");
                 databaseHandler.printAllRecords();
                 break;
+            case "printl":
+                System.out.println("All logs registered in database");
+                databaseHandler.printAllLogs();
+                break;
             case "create":
                 System.out.print("Name: ");
                 String name = in.nextLine();
