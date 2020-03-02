@@ -60,12 +60,4 @@ public class NetworkHandler {
             return false;
         }
     }
-
-    public static void SendRequest(String request) throws IOException {
-        communicator.send(request);
-    }
-
-    public static String receive() throws IOException {
-        return communicator.receive();
-    }
 }

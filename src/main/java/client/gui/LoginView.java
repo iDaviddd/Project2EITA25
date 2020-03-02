@@ -2,6 +2,7 @@ package client.gui;
 
 import client.network.NetworkHandler;
 import utility.Hasher;
+import utility.Request;
 import utility.RequestHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -59,20 +60,8 @@ public class LoginView {
         loginButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                NetworkHandler.communicator.send(username.getText());
-                String salt = NetworkHandler.communicator.receive();
-                String challenge = NetworkHandler.communicator.receive();
 
-                String hashedPassword = Hasher.HashPassword(password.getText(), salt);
-
-                String response = Hasher.HashPassword(hashedPassword, challenge);
-
-                NetworkHandler.communicator.send(response);
-                NetworkHandler.communicator.send(OTP.getText());
-
-
-
-                if(NetworkHandler.communicator.receive().equals("Authenticated")){
+                if(login(username.getText(), password.getText(), OTP.getText())){
                     System.out.println("Authenticated");
                     viewController.switchScene("records");
                 }
@@ -101,6 +90,31 @@ public class LoginView {
      */
     public Parent getParent(){
         return parent;
+    }
+
+    private boolean login(String username, String password, String OTP){
+        NetworkHandler.communicator.send(new Request("username", "post", username));
+
+        Request salt = NetworkHandler.communicator.receive();
+        if(!salt.type.equals("salt")){
+            System.out.println("Login did not receive salt");
+            return false;
+        }
+        Request challenge = NetworkHandler.communicator.receive();
+        if(!challenge.type.equals("challenge")){
+            System.out.println("Login did not receive challenge");
+            return false;
+        }
+
+        String hashedPassword = Hasher.HashPassword(password, salt.data);
+
+        String response = Hasher.HashPassword(hashedPassword, challenge.data);
+
+        NetworkHandler.communicator.send(new Request("challenge response", "post", response));
+        NetworkHandler.communicator.send(new Request("OTP", "post", OTP));
+
+        Request authentication = NetworkHandler.communicator.receive();
+        return authentication.type.equals("authentication") && authentication.data.equals("true");
     }
 
 

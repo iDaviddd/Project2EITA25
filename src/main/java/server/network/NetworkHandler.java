@@ -33,12 +33,17 @@ public class NetworkHandler implements Runnable {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             Communicator communicator = new Communicator(in, out);
-            boolean authenticated = LoginHandler.login(communicator);
+            User user = null;
+            while(user == null){
+                user = LoginHandler.login(communicator);
+            }
 
 
-            while (authenticated) {
-                String message = communicator.receive();
-                System.out.println(message);
+            while (user != null) {
+                Request request = communicator.receive();
+
+                RequestHandler.processRequest(request, user);
+
             }
 
             in.close();

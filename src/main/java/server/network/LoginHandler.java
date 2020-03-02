@@ -6,36 +6,61 @@ import org.apache.commons.codec.binary.Hex;
 import server.ServerMain;
 import utility.Communicator;
 import utility.Hasher;
+import utility.Request;
 import utility.User;
 
 import java.util.List;
 
 public class LoginHandler {
 
-    static boolean login(Communicator communicator){
-        while (true) {
-            String username = communicator.receive();
-            User user = findUser(username);
+    static User login(Communicator communicator){
+            Request username = communicator.receive();
+            if(!username.type.equals("username")){
+                System.out.println("Login did not receive username");
+                communicator.send(new Request("authentication", "post", "false"));
+                return null;
+            }
 
-            communicator.send(user.getSalt());
+            User user = findUser(username.data);
+            if(user == null){
+                System.out.println("User not found");
+                communicator.send(new Request("authentication", "post", "false"));
+                return null;
+            }
+
             String challenge = User.generateSecretKey(32);
-            communicator.send(challenge);
-            String response = Hasher.HashPassword(user.getPassword(), challenge);
-            String clientResponse = communicator.receive();
-            String OTP = communicator.receive();
 
-            if(LoginHandler.testUserCreditials(user,response,clientResponse,OTP)){
-                communicator.send("Authenticated");
+            communicator.send( new Request("salt", "post", user.getSalt()));
+            communicator.send( new Request("challenge", "post", challenge));
+
+            String response = Hasher.HashPassword(user.getPassword(), challenge);
+
+            Request clientResponse = communicator.receive();
+            if(!clientResponse.type.equals("challenge response")){
+                System.out.println("Login did not receive challenge response");
+                communicator.send(new Request("authentication", "post", "false"));
+                return null;
+            }
+
+            Request OTP = communicator.receive();
+            if(!OTP.type.equals("OTP")){
+                System.out.println("Login did not receive OTP");
+                communicator.send(new Request("authentication", "post", "false"));
+                return null;
+            }
+
+            if(LoginHandler.testUserCreditials(user,response,clientResponse.data,OTP.data)){
+                communicator.send(new Request("authentication", "post", "true"));
                 System.out.println("Authenticated");
-                return true;
+                return user;
             }
             else{
-                communicator.send("Error");
+                communicator.send(new Request("authentication", "post", "false"));
+                return null;
             }
-        }
     }
 
-    static boolean testUserCreditials(User user, String response, String clientResponse, String OTP){
+    private static boolean testUserCreditials(User user, String response, String clientResponse, String OTP){
         System.out.println("OTP: " + getTOTPCode(user.getOtpSecret()));
 
         if(!response.equals(clientResponse))

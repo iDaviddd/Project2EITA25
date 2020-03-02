@@ -25,10 +25,12 @@ public class ServerMain {
 		Scanner in = new Scanner(System.in);
 
 		System.out.print("Enter path to database file: ");
-		String pathToDataBase = in.nextLine();
+		//String pathToDataBase = in.nextLine();
+		String pathToDataBase = "database/database.db";
 
 		System.out.print("Enter password to keystore: ");
-		String KeyStorePassword = in.nextLine();
+		//String KeyStorePassword = in.nextLine();
+		String KeyStorePassword = "password";
 
 		databaseHandler = new DatabaseHandler(pathToDataBase);
 		System.out.println("Database initialized.");

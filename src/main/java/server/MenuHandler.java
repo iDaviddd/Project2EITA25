@@ -27,7 +27,7 @@ public class MenuHandler {
                 System.out.print("Personal Number(XXXXXXXX-XXXX): ");
                 String personal_number = in.nextLine();
                 System.out.print("Password: ");
-                String salt = User.generateSecretKey(8);
+                String salt = User.generateSecretKey(16);
                 String password = Hasher.HashPassword(in.nextLine(),  salt);
                 String division = "";
                 if(role.equalsIgnoreCase("doctor") || role.equalsIgnoreCase("nurse")) {

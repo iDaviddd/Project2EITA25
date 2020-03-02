@@ -16,22 +16,36 @@ public class Communicator {
         this.reader = reader;
     }
 
-    public void send(String message) {
+   /* public void send(String message) {
         Gson gson = new Gson();
         System.out.println("Sending: " + message);
         String json = gson.toJson(message);
         writer.write(json + "\n");
         writer.flush();
+    }*/
+
+    public void send(Request request) {
+        Gson gson = new Gson();
+        System.out.println("Sending: " + request);
+        String json = gson.toJson(request);
+        writer.write(json + "\n");
+        writer.flush();
     }
 
-    public String receive() {
+    public Request receive() {
         Gson gson = new Gson();
 
-        String result = "";
+        Request result = null;
 
         try {
-            result = gson.fromJson(reader.readLine(), String.class);
-            System.out.println("Received: " + result);
+            result = gson.fromJson(reader.readLine(), Request.class);
+            if(result != null){
+                System.out.println("Received: " + result.type + " " + result.actionType + " " + result.data);
+            }
+            else {
+                System.out.println("Received: " + result);
+            }
+
         }
         catch (JsonSyntaxException e) {
             System.out.println("Json syntax error");
