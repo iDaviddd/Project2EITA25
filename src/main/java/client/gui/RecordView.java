@@ -56,8 +56,6 @@ public class RecordView implements View{
         buttonBox = new HBox();
         buttonBox.getChildren().add(backButton);
         buttonBox.getChildren().add(chooseButton);
-        System.out.println();
-
 
         borderPane.setBottom(buttonBox);
 
@@ -68,7 +66,6 @@ public class RecordView implements View{
         listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                System.out.println(listView.getSelectionModel().getSelectedItem());
                 chooseButton.setDisable(false);
             }
         });

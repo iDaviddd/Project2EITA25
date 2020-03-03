@@ -52,7 +52,6 @@ public class LoginView implements View{
             public void handle(ActionEvent event) {
 
                 if(login(username.getText(), password.getText(), OTP.getText())){
-                    System.out.println("Authenticated");
                     viewController.switchScene("patients");
                 }
                 else{

@@ -120,11 +120,6 @@ public class DatabaseHandler {
         String sql = "INSERT INTO logs(user_personal_number, record_id, action_type, action) VALUES(?,?,?,?)";
 
         try {
-            System.out.println("Log");
-            System.out.println(log.getPersonalNumber());
-            System.out.println(log.getRecordId());
-            System.out.println(log.getActionType());
-            System.out.println(log.getAction());
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, log.getPersonalNumber());
             pstmt.setInt(2, log.getRecordId());
