@@ -4,7 +4,6 @@ import javax.net.ssl.*;
 import java.io.*;
 import java.net.ServerSocket;
 
-import com.google.gson.Gson;
 import utility.*;
 
 
@@ -12,7 +11,7 @@ public class NetworkHandler implements Runnable {
     private ServerSocket serverSocket = null;
     private static int numConnectedClients = 0;
 
-    public NetworkHandler(ServerSocket ss) throws IOException {
+    public NetworkHandler(ServerSocket ss) {
         serverSocket = ss;
         newListener();
     }

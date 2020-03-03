@@ -9,7 +9,6 @@ import java.security.KeyStore;
 
 public class NetworkHandler {
     private static SSLSocket socket;
-    private static PrintWriter out;
     private static BufferedReader in;
     public static Communicator communicator;
 
@@ -29,7 +28,7 @@ public class NetworkHandler {
         }
 
 
-        System.out.println("\nsocket before handshake:\n" + this.socket + "\n");
+        System.out.println("\nsocket before handshake:\n" + socket + "\n");
         boolean connected = false;
         while (!connected) {
             connected = connect(factory, host, port);
@@ -41,7 +40,7 @@ public class NetworkHandler {
 
         System.out.println("secure connection established\n\n");
         try {
-            out = new PrintWriter(socket.getOutputStream(), true);
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             communicator = new Communicator(in, out);
         } catch (IOException e) {

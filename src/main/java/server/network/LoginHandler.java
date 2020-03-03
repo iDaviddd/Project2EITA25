@@ -67,10 +67,7 @@ public class LoginHandler {
         if(!response.equals(clientResponse))
             return false;
 
-        if(!getTOTPCode(user.getOtpSecret()).equals(OTP))
-            return false;
-
-        return true;
+        return getTOTPCode(user.getOtpSecret()).equals(OTP);
     }
 
     private static String getTOTPCode(String secretKey) {

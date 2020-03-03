@@ -56,8 +56,7 @@ public class Communicator {
     public List receive(JsonDeserializer deserializer) throws IOException {
         Gson gson = new GsonBuilder().registerTypeAdapter(List.class, deserializer).create();
 
-        List list = gson.fromJson(reader.readLine(), List.class);
-        return list;
+        return gson.fromJson(reader.readLine(), List.class);
     }
 
 

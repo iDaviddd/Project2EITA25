@@ -1,13 +1,9 @@
 package utility;
 
-import client.network.NetworkHandler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sun.security.ntlm.Server;
 import server.ServerMain;
-import server.database.DatabaseHandler;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -204,22 +200,16 @@ public class RequestHandler {
         String role = user.getRole();
         String division = user.getDivision();
         if(role.equals("Doctor")){
-            if(user.getPersonalNumber().equals(record.getDoctorPersonalNumber()) || division.equals(record.getDivision()))
-                return true;
+            return user.getPersonalNumber().equals(record.getDoctorPersonalNumber()) || division.equals(record.getDivision());
         }
         else if(role.equals("Nurse")){
-            if(user.getPersonalNumber().equals(record.getNursePersonalNumber()) || division.equals(record.getDivision()))
-                return true;
+            return user.getPersonalNumber().equals(record.getNursePersonalNumber()) || division.equals(record.getDivision());
         }
         else if(role.equals("Patient")){
-            if(user.getPersonalNumber().equals(record.getPatientPersonalNumber()))
-                return true;
+            return user.getPersonalNumber().equals(record.getPatientPersonalNumber());
 
         }
-        else if(role.equals("Government")){
-            return true;
-        }
-        return false;
+        else return role.equals("Government");
     }
 
     private boolean isUsersAllowedToWriteToRecord(User user, Record record){

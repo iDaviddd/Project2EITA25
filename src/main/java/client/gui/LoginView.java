@@ -3,7 +3,6 @@ package client.gui;
 import client.network.NetworkHandler;
 import utility.Hasher;
 import utility.Request;
-import utility.RequestHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -13,8 +12,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-
-import java.io.IOException;
 
 
 public class LoginView implements View{

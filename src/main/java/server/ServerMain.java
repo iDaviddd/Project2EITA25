@@ -7,14 +7,11 @@ import server.network.SocketFactory;
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLServerSocket;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.util.Scanner;
 
 public class ServerMain {
 
 	public static DatabaseHandler databaseHandler;
-	
-	private static boolean running;
 
 	public static void main(String[] args) {
 		System.out.println("Starting server...");
@@ -48,7 +45,7 @@ public class ServerMain {
 		}
 		System.out.println("Server started.");
 
-		running = true;
+		boolean running = true;
 		while (running) {
 			running = MenuHandler.printMenu(in, databaseHandler);
 		}

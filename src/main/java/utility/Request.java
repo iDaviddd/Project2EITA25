@@ -1,7 +1,5 @@
 package utility;
 
-import java.util.List;
-
 public class Request {
 
     public String type;

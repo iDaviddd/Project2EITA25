@@ -9,7 +9,7 @@ import java.io.*;
 public class ClientMain extends Application {
 
 	@Override
-	public void start(Stage primaryStage) throws IOException, InterruptedException {
+	public void start(Stage primaryStage) throws InterruptedException {
 		ViewController viewController = new ViewController(this);
 
 		String host = "localhost";
