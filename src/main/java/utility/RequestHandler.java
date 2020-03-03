@@ -100,8 +100,12 @@ public class RequestHandler {
         else if (type.equals("record") && actionType.equals("post")){
 
             //if(allowed to write to record){}
-            //update record
-           String newRecordText = data;
+            ServerMain.databaseHandler.updateRecord("record", data, "record_id", selectedRecord.getRecordId().toString());
+        }
+        else if (type.equals("record") && actionType.equals("delete")){
+            //if(allowed to delete record){}
+            ServerMain.databaseHandler.deleteRecord(selectedRecord.getRecordId());
+            selectedRecord = null;
         }
         else if (type.equals("add_record") && actionType.equals("post")){
             if(user.getRole().equals("Doctor")){

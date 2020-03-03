@@ -24,6 +24,7 @@ public class DetailView implements View {
     private TextArea recordText;
     private VBox bodyBox;
     private Button saveButton;
+    private Button deleteButton;
 
 
 
@@ -55,6 +56,7 @@ public class DetailView implements View {
 
         recordText = new TextArea();
         recordText.setText("");
+        recordText.editableProperty().setValue(false);
         Button backButton = new Button("Back");
 
         backButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -68,7 +70,17 @@ public class DetailView implements View {
         saveButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                NetworkHandler.communicator.send(new Request("update record","post",recordText.getText()));
+                NetworkHandler.communicator.send(new Request("record","post", recordText.getText()));
+                viewController.switchScene("records");
+            }
+        });
+
+        deleteButton = new Button("Delete");
+        deleteButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                NetworkHandler.communicator.send(new Request("record","delete", ""));
+                viewController.switchScene("records");
             }
         });
 
@@ -89,9 +101,12 @@ public class DetailView implements View {
 
     @Override
     public void update() {
-        if(!ViewController.role.equals("Doctor") && !ViewController.role.equals("Nurse") && !bodyBox.getChildren().contains(saveButton)){
-            recordText.editableProperty().setValue(false);
+        if((ViewController.role.equals("Doctor") || ViewController.role.equals("Nurse")) && !bodyBox.getChildren().contains(saveButton)){
+            recordText.editableProperty().setValue(true);
             bodyBox.getChildren().add(saveButton);
+        }
+        if(ViewController.role.equals("Government") && !bodyBox.getChildren().contains(saveButton)){
+            bodyBox.getChildren().add(deleteButton);
         }
 
         NetworkHandler.communicator.send(new Request("record", "get", ""));
