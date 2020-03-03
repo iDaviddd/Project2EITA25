@@ -22,6 +22,9 @@ public class DetailView implements View {
     private TextField doctorText;
     private TextField nurseText;
     private TextArea recordText;
+    private VBox bodyBox;
+    private Button saveButton;
+
 
 
     DetailView(ViewController viewController) {
@@ -52,8 +55,8 @@ public class DetailView implements View {
 
         recordText = new TextArea();
         recordText.setText("");
-
         Button backButton = new Button("Back");
+
         backButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -61,10 +64,17 @@ public class DetailView implements View {
             }
         });
 
-        BorderPane borderPane = new BorderPane();
-        VBox bodyBox = new VBox();
-        bodyBox.getChildren().addAll(recordText, backButton);
+        saveButton = new Button("Save");
+        saveButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                NetworkHandler.communicator.send(new Request("update record","post",recordText.getText()));
+            }
+        });
 
+        BorderPane borderPane = new BorderPane();
+        bodyBox = new VBox();
+        bodyBox.getChildren().addAll(recordText, backButton);
 
         borderPane.setTop(headerBox);
         borderPane.setCenter(bodyBox);
@@ -79,6 +89,11 @@ public class DetailView implements View {
 
     @Override
     public void update() {
+        if(!ViewController.role.equals("Doctor") && !ViewController.role.equals("Nurse") && !bodyBox.getChildren().contains(saveButton)){
+            recordText.editableProperty().setValue(false);
+            bodyBox.getChildren().add(saveButton);
+        }
+
         NetworkHandler.communicator.send(new Request("record", "get", ""));
 
         String patientName = NetworkHandler.communicator.receive().data;

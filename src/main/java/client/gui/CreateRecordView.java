@@ -1,5 +1,8 @@
 package client.gui;
 
+import client.network.NetworkHandler;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -9,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import utility.Request;
 
 
 public class CreateRecordView implements View{
@@ -24,23 +28,23 @@ public class CreateRecordView implements View{
         BorderPane borderPane = new BorderPane();
 
         ButtonBar buttons = new ButtonBar();
-        Button back = new Button("Back");
-        Button create = new Button("Create");
+        Button backButton = new Button("Back");
+        Button createButton = new Button("Create");
 
-        buttons.getButtons().addAll(back, create);
+        buttons.getButtons().addAll(backButton, createButton);
 
         VBox container = new VBox(5);
         container.setPadding(new Insets(5,5,5,5));
-        Label textPatient = new Label("Patient name");
+        /*Label textPatient = new Label("Patient name");
         TextField patient = new TextField();
         Label textPersonalNumber = new Label("Patient's personal identity number");
-        TextField personalNumber = new TextField();
-        Label textNurse = new Label("Nurse");
+        TextField personalNumber = new TextField();*/
+        Label textNurse = new Label("Nurse's personal identity number");
         TextField nurse = new TextField();
         Label textRecord = new Label("Record");
         TextArea record = new TextArea();
 
-        container.getChildren().addAll(textPatient, patient, textPersonalNumber, personalNumber, textNurse, nurse, textRecord, record, buttons);
+        container.getChildren().addAll(/*textPatient, patient, textPersonalNumber, personalNumber, */textNurse, nurse, textRecord, record, buttons);
 
 
         borderPane.setCenter(container);
@@ -48,6 +52,23 @@ public class CreateRecordView implements View{
         parent = borderPane;
 
         viewController.setTitle("Create");
+
+        backButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                viewController.switchScene("records", false);
+            }
+        });
+
+        createButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                NetworkHandler.communicator.send(new Request("selectNurse", "post", nurse.getText()));
+                NetworkHandler.communicator.receive();
+                NetworkHandler.communicator.send(new Request("add_record", "post", record.getText()));
+                viewController.switchScene("records");
+            }
+        });
     }
 
     @Override

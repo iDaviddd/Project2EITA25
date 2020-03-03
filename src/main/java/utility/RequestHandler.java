@@ -16,20 +16,21 @@ public class RequestHandler {
     static GsonBuilder builder = new GsonBuilder();
     static Gson gson = builder.create();
     private User selectedRecordUser = null;
+    private User selectedNurse = null;
     private Record selectedRecord = null;
+
 
     public void processRequest(Request request, User user, Communicator communicator) {
 
         String type = request.type;
         String actionType = request.actionType;
-        Object data = request.data;
+        String data = request.data;
         boolean reply = request.reply;
 
 
         if (type.equals("records") && actionType.equals("get")) {
             System.out.println(selectedRecordUser);
             List<Record> records = getRecordsOfUser(this.selectedRecordUser);
-
 
             communicator.send(new Request("records", "get", true, "start"));
             records.forEach(a -> {
@@ -62,7 +63,7 @@ public class RequestHandler {
 
             communicator.send(new Request("records", "get", true, null));
         }
-        if (type.equals("users") && actionType.equals("get") && data.equals("patients")) {
+        else if (type.equals("users") && actionType.equals("get") && data.equals("patients")) {
             // Returns a list of all patients.
             List<User> patients = getPatients();
             System.out.println(patients);
@@ -70,7 +71,7 @@ public class RequestHandler {
             patients.forEach(a -> communicator.send(new Request("users", "get", true, a.getPersonalNumber())));
             communicator.send(new Request("users", "get", true, null));
         }
-        if (type.equals("record") && actionType.equals("get")) {
+        else if (type.equals("record") && actionType.equals("get")) {
             List<User> patients = ServerMain.databaseHandler.findUsers("personal_number", selectedRecord.getPatientPersonalNumber());
             List<User> doctors = ServerMain.databaseHandler.findUsers("personal_number", selectedRecord.getDoctorPersonalNumber());
             List<User> nurses = ServerMain.databaseHandler.findUsers("personal_number", selectedRecord.getNursePersonalNumber());
@@ -96,25 +97,44 @@ public class RequestHandler {
 
             communicator.send(new Request("record", "get", true, selectedRecord.getRecord()));
         }
+        else if (type.equals("record") && actionType.equals("post")){
 
-        if (type.equals("selectRecordUser") && actionType.equals("post")) {
+            //if(allowed to write to record){}
+            //update record
+           String newRecordText = data;
+        }
+        else if (type.equals("add_record") && actionType.equals("post")){
+            if(user.getRole().equals("Doctor")){
+                Record record = new Record(selectedRecordUser.getPersonalNumber(), user.getPersonalNumber(), selectedNurse.getPersonalNumber(), user.getDivision(), data);
+                ServerMain.databaseHandler.addRecord(record);
+            }
+        }
+        else if (type.equals("selectRecordUser") && actionType.equals("post")) {
             System.out.println("SELECTED RECORD USeR");
-            List<User> users = ServerMain.databaseHandler.findUsers("personal_number", (String) data);
+            List<User> users = ServerMain.databaseHandler.findUsers("personal_number", data);
             if (users.size() != 1) {
                 communicator.send(new Request("selectedRecordUser", "post", true, "failed"));
             }
             selectedRecordUser = users.get(0);
             communicator.send(new Request("selectedRecordUser", "post", true, "success"));
         }
-
-        if (type.equals("selectRecord") && actionType.equals("post")) {
-            List<Record> records = ServerMain.databaseHandler.findRecords("record_id", (String) data);
+        else if (type.equals("selectRecord") && actionType.equals("post")) {
+            List<Record> records = ServerMain.databaseHandler.findRecords("record_id", data);
             if (records.size() != 1) {
                 communicator.send(new Request("selectRecord", "post", true, "failed"));
             }
             selectedRecord = records.get(0);
             communicator.send(new Request("selectRecord", "post", true, "success"));
         }
+        else if (type.equals("selectNurse") && actionType.equals("post")) {
+            List<User> nurses = ServerMain.databaseHandler.findUsers("personal_number", data);
+            if (nurses.size() != 1) {
+                communicator.send(new Request("selectedRecordUser", "post", true, "failed"));
+            }
+            selectedNurse = nurses.get(0);
+            communicator.send(new Request("selectedRecordUser", "post", true, "success"));
+        }
+
     }
 
     private static List<User> getPatients() {

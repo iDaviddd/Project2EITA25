@@ -51,6 +51,7 @@ public class LoginHandler {
 
             if(LoginHandler.testUserCreditials(user,response,(String) clientResponse.data, (String) OTP.data)){
                 communicator.send(new Request("authentication", "post", "true"));
+                communicator.send(new Request("role", "post", user.getRole()));
                 System.out.println("Authenticated");
                 return user;
             }

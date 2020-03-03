@@ -14,6 +14,7 @@ public class ViewController extends Stage {
     private Scene scene;
     public Map<String, View> views = new HashMap<>();
     public ObservableMap<String, String> user = FXCollections.observableHashMap();
+    public static String role = "";
 
 
     public ViewController(ClientMain clientMain) {
