@@ -70,6 +70,11 @@ public class MenuHandler {
                 databaseHandler.addRecord(r);
                 System.out.println("Record has been successfully added. ");
                 break;
+            case "del_user":
+                System.out.print("Personal number:");
+                personal_number = in.nextLine();
+                databaseHandler.deleteUser(personal_number);
+
             case "help":
                 System.out.println("--------- HELP --------");
                 System.out.println("help - print this message");

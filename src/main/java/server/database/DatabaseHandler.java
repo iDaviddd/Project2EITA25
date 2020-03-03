@@ -165,11 +165,11 @@ public class DatabaseHandler {
     /**
      * Delete a user from the database.
      *
-     * @param id of user to be deleted
+     * @param personal_number of user to be deleted
      */
-    public void deleteUser(int id) {
+    public void deleteUser(String personal_number) {
         // Specify sql command
-        String sql = "DELETE FROM users WHERE id='" + id + "';";
+        String sql = "DELETE FROM users WHERE personal_number='" + personal_number + "';";
 
         try {
             // Execute command
