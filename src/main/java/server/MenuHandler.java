@@ -28,6 +28,10 @@ public class MenuHandler {
                 System.out.println("All logs registered in database");
                 databaseHandler.printAllLogs();
                 break;
+            case "printt":
+                System.out.println("All treatments registered in database");
+                databaseHandler.printAllTreatments();
+                break;
             case "create":
                 System.out.print("Name: ");
                 String name = in.nextLine();
@@ -76,16 +80,25 @@ public class MenuHandler {
                 databaseHandler.deleteUser(personal_number);
                 System.out.println("User deleted from database");
                 break;
+            case "add_treatment":
+                System.out.print("Doctor personal number:");
+                doctor_personal_number = in.nextLine();
+                System.out.print("Patient personal number:");
+                patient_personal_number = in.nextLine();
+                databaseHandler.addTreatment(doctor_personal_number, patient_personal_number);
+                break;
             case "help":
                 System.out.println("--------- HELP --------");
                 System.out.println("help - print this message");
                 System.out.println("quit - close the server");
                 System.out.println("print - print all registered users in database");
                 System.out.println("printr - prints all registered records in database");
+                System.out.println("printt - print all registered treatments in database");
                 System.out.println("create - Create a user");
                 System.out.println("find - Search the user table for a user");
                 System.out.println("add_record - Add a record");
                 System.out.println("del_user - Deletes a user from database");
+                System.out.println("add_treatment - Create a treatment of a doctor and patient. ");
                 break;
             default:
                 System.out.println("Unknown command. Type 'help' for help.");

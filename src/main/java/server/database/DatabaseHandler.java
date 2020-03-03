@@ -167,6 +167,19 @@ public class DatabaseHandler {
         }
     }
 
+    public void addTreatment(String doctor_personal_number, String patient_personal_number) {
+        String sql = "INSERT INTO treating(doctor_personal_number, patient_personal_number) VALUES(?,?)";
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, doctor_personal_number);
+            pstmt.setString(2, patient_personal_number);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
     public Integer getLatestRecordId() {
         String sql = "SELECT MAX(record_id) FROM records;";
 
@@ -401,6 +414,21 @@ public class DatabaseHandler {
                         + rs.getString("action"));
             }
 
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void printAllTreatments() {
+        String sql = "SELECT * FROM treating";
+
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while(rs.next()) {
+                System.out.println("[Treatment] " + rs.getString("doctor_personal_number") + " is treating " + rs.getString("patient_personal_number"));
+            }
         } catch (SQLException e) {
             System.out.println("Error: " + e.getMessage());
         }
