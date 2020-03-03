@@ -53,12 +53,15 @@ public class DatabaseHandler {
         String sql3 = "CREATE TABLE IF NOT EXISTS logs (\n" + "log_id integer PRIMARY KEY,\n"
                 + "timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,\n" + "user_personal_number INT NOT NULL,\n"
                 + "record_id INT,\n" + "action_type VARCHAR(20) NOT NULL,\n" + "action VARCHAR(255) NOT NULL\n" + ");";
+        String sql4 = "CREATE TABLE IF NOT EXISTS treating (\n" + "id integer PRIMARY KEY,\n"
+                + "doctor_personal_number INT NOT NULL,\n" + "patient_personal_number INT NOT NULL\n" + ");";
         try {
             Connection conn = DriverManager.getConnection(url);
             Statement stmt = conn.createStatement();
             stmt.execute(sql1);
             stmt.execute(sql2);
             stmt.execute(sql3);
+            stmt.execute(sql4);
         } catch (SQLException e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -66,10 +69,11 @@ public class DatabaseHandler {
 
     /**
      * Update a record.
+     *
      * @param change_column column to change
-     * @param value new value
+     * @param value         new value
      * @param search_column column to search for record
-     * @param search_term is the term to identify the record
+     * @param search_term   is the term to identify the record
      */
     public void updateRecord(String change_column, String value, String search_column, String search_term) {
         String sql = "UPDATE records SET " + change_column + " = ? WHERE " + search_column + " = ?";
@@ -169,6 +173,22 @@ public class DatabaseHandler {
 
         try {
             // Execute command
+            Statement stmt = conn.createStatement();
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Delete a record.
+     *
+     * @param id of record to be deleted.
+     */
+    public void deleteRecord(int id) {
+        String sql = "DELETE FROM records where record_id='" + id + "';";
+
+        try {
             Statement stmt = conn.createStatement();
             stmt.execute(sql);
         } catch (SQLException e) {
@@ -279,6 +299,25 @@ public class DatabaseHandler {
             System.out.println("Error: " + e.getMessage());
         }
         return set;
+    }
+
+    public HashSet<String> findPatients(String doctor_personal_number) {
+        HashSet<String> result = new HashSet<String>();
+
+        String sql = "SELECT * FROM treating WHERE doctor_personal_number='?';";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, doctor_personal_number);
+            ResultSet rs = pstmt.executeQuery(sql);
+
+            while (rs.next()) {
+                String patient_personal_number = rs.getString("patient_personal_number");
+                result.add(patient_personal_number);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return result;
     }
 
     /**
