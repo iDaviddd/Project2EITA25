@@ -27,7 +27,6 @@ public class RequestHandler {
         String data = request.data;
         boolean reply = request.reply;
 
-
         if (type.equals("records") && actionType.equals("get")) {
             System.out.println(selectedRecordUser);
             List<Record> records = getRecordsOfUser(this.selectedRecordUser);
@@ -68,7 +67,30 @@ public class RequestHandler {
             List<User> patients = getPatients();
             System.out.println(patients);
             communicator.send(new Request("users", "get", true, "start"));
-            patients.forEach(a -> communicator.send(new Request("users", "get", true, a.getPersonalNumber())));
+            patients.forEach(a -> {
+
+                boolean send = false;
+                switch (user.getRole()) {
+                    case "Doctor":
+                        send = true;
+                        break;
+                    case "Nurse":
+                        send = true;
+                        break;
+                    case "Patient":
+                        if (a.getPersonalNumber().equals(user.getPersonalNumber()))
+                            send = true;
+                        break;
+                    case "Government":
+                        send = true;
+                        break;
+                    default:
+                        break;
+                }
+                if (send) {
+                    communicator.send(new Request("users", "get", true, a.getPersonalNumber()));
+                }
+            });
             communicator.send(new Request("users", "get", true, null));
         }
         else if (type.equals("record") && actionType.equals("get")) {
