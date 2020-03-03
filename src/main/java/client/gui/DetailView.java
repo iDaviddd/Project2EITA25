@@ -6,10 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -71,7 +68,14 @@ public class DetailView implements View {
             @Override
             public void handle(ActionEvent event) {
                 NetworkHandler.communicator.send(new Request("record","post", recordText.getText()));
-                viewController.switchScene("records");
+                if(NetworkHandler.communicator.receive().type.equals("error")){
+                    Alert a = new Alert(Alert.AlertType.ERROR);
+                    a.setContentText("Not allowed to write to record");
+                    a.show();
+                }
+                else{
+                    viewController.switchScene("records");
+                }
             }
         });
 
@@ -80,7 +84,14 @@ public class DetailView implements View {
             @Override
             public void handle(ActionEvent event) {
                 NetworkHandler.communicator.send(new Request("record","delete", ""));
-                viewController.switchScene("records");
+                if(NetworkHandler.communicator.receive().type.equals("error")){
+                    Alert a = new Alert(Alert.AlertType.ERROR);
+                    a.setContentText("Not allowed to delete record");
+                    a.show();
+                }
+                else{
+                    viewController.switchScene("records");
+                }
             }
         });
 
@@ -110,22 +121,32 @@ public class DetailView implements View {
         }
 
         NetworkHandler.communicator.send(new Request("record", "get", ""));
+        Request r = NetworkHandler.communicator.receive();
 
-        String patientName = NetworkHandler.communicator.receive().data;
-        String patientNumber = NetworkHandler.communicator.receive().data;
+        if(r.type.equals("error")){
+            //Print error
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setContentText("Not allowed to view record");
+            a.show();
+        }
+        else{
+            String patientName = r.data;
 
-        String doctorName = NetworkHandler.communicator.receive().data;
-        String doctorNumber = NetworkHandler.communicator.receive().data;
+            String patientNumber = NetworkHandler.communicator.receive().data;
 
-        String nurseName = NetworkHandler.communicator.receive().data;
-        String nurseNumber = NetworkHandler.communicator.receive().data;
+            String doctorName = NetworkHandler.communicator.receive().data;
+            String doctorNumber = NetworkHandler.communicator.receive().data;
 
-        String record = NetworkHandler.communicator.receive().data;
+            String nurseName = NetworkHandler.communicator.receive().data;
+            String nurseNumber = NetworkHandler.communicator.receive().data;
 
-        patientText.setText(patientName + " " + patientNumber);
-        doctorText.setText(doctorName + " " + doctorNumber);
-        nurseText.setText(nurseName + " " + nurseNumber);
+            String record = NetworkHandler.communicator.receive().data;
 
-        recordText.setText(record);
+            patientText.setText(patientName + " " + patientNumber);
+            doctorText.setText(doctorName + " " + doctorNumber);
+            nurseText.setText(nurseName + " " + nurseNumber);
+
+            recordText.setText(record);
+        }
     }
 }

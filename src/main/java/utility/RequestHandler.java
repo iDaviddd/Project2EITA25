@@ -9,6 +9,7 @@ import server.database.DatabaseHandler;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class RequestHandler {
@@ -33,27 +34,7 @@ public class RequestHandler {
 
             communicator.send(new Request("records", "get", true, "start"));
             records.forEach(a -> {
-                boolean send = false;
-                switch (user.getRole()) {
-                    case "Doctor":
-                        if (a.getDoctorPersonalNumber().equals(user.getPersonalNumber()) || a.getDivision().equals(user.getDivision()))
-                            send = true;
-                        break;
-                    case "Nurse":
-                    if (a.getNursePersonalNumber().equals(user.getPersonalNumber()) || a.getDivision().equals(user.getDivision()))
-                        send = true;
-                    break;
-                    case "Patient":
-                        if (a.getPatientPersonalNumber().equals(user.getPersonalNumber()))
-                            send = true;
-                        break;
-                    case "Government":
-                        send = true;
-                        break;
-                    default:
-                        break;
-                }
-                if(send) {
+                if(usersIsAllowedToReadRecord(user,a)) {
                     Log log = new Log(user.getPersonalNumber(), a.getRecordId(), ActionType.LIST_RECORD.toString(), user.getName() + " listed this record.");
                     ServerMain.databaseHandler.addLog(log);
                     communicator.send(new Request("records", "get", true, a.getRecordId().toString()));
@@ -65,8 +46,9 @@ public class RequestHandler {
         else if (type.equals("users") && actionType.equals("get") && data.equals("patients")) {
             // Returns a list of all patients.
             List<User> patients = getPatients();
-            System.out.println(patients);
             Log log = new Log(user.getPersonalNumber(), -1, ActionType.LIST_ALL_USERS.toString(), user.getName() + " listed all users he have access to.");
+
+
             ServerMain.databaseHandler.addLog(log);
             communicator.send(new Request("users", "get", true, "start"));
             patients.forEach(a -> {
@@ -96,6 +78,10 @@ public class RequestHandler {
             communicator.send(new Request("users", "get", true, null));
         }
         else if (type.equals("record") && actionType.equals("get")) {
+            if(!usersIsAllowedToReadRecord(user, selectedRecord)){
+                communicator.send(new Request("record", "get", true, "Not allowed"));
+                return;
+            }
             List<User> patients = ServerMain.databaseHandler.findUsers("personal_number", selectedRecord.getPatientPersonalNumber());
             List<User> doctors = ServerMain.databaseHandler.findUsers("personal_number", selectedRecord.getDoctorPersonalNumber());
             List<User> nurses = ServerMain.databaseHandler.findUsers("personal_number", selectedRecord.getNursePersonalNumber());
@@ -126,26 +112,44 @@ public class RequestHandler {
         }
         else if (type.equals("record") && actionType.equals("post")){
 
-            //if(allowed to write to record){}
-            Log log = new Log(user.getPersonalNumber(), selectedRecord.getRecordId(), ActionType.MODIFY_RECORD.toString(), user.getName() + " modified a record.");
-            ServerMain.databaseHandler.addLog(log);
-            ServerMain.databaseHandler.updateRecord("record", data, "record_id", selectedRecord.getRecordId().toString());
+            if(isUsersAllowedToWriteToRecord(user, selectedRecord)){
+                Log log = new Log(user.getPersonalNumber(), selectedRecord.getRecordId(), ActionType.MODIFY_RECORD.toString(), user.getName() + " modified a record.");
+                ServerMain.databaseHandler.addLog(log);
+                ServerMain.databaseHandler.updateRecord("record", data, "record_id", selectedRecord.getRecordId().toString());
+                communicator.send(new Request("success", "get", true, "Success"));
+            }
+            else {
+                communicator.send(new Request("error", "get", true, "Not allowed"));
+            }
+
         }
         else if (type.equals("record") && actionType.equals("delete")){
-            //if(allowed to delete record){}
-            Log log = new Log(user.getPersonalNumber(), selectedRecord.getRecordId(), ActionType.REMOVE_RECORD.toString(), user.getName() + " deleted record.");
-            ServerMain.databaseHandler.addLog(log);
-            ServerMain.databaseHandler.deleteRecord(selectedRecord.getRecordId());
-            selectedRecord = null;
+            if(user.getRole().equals("Government")){
+                Log log = new Log(user.getPersonalNumber(), selectedRecord.getRecordId(), ActionType.REMOVE_RECORD.toString(), user.getName() + " deleted record.");
+                ServerMain.databaseHandler.addLog(log);
+                ServerMain.databaseHandler.deleteRecord(selectedRecord.getRecordId());
+                selectedRecord = null;
+            }
+            else{
+                communicator.send(new Request("error", "get", true, "Not allowed"));
+            }
+
         }
         else if (type.equals("add_record") && actionType.equals("post")){
-            if(user.getRole().equals("Doctor")){
+            System.out.println(user.getPersonalNumber());
+            Set<String> patients = ServerMain.databaseHandler.findPatients(user.getPersonalNumber());
+
+
+            if(user.getRole().equals("Doctor") && patients.contains(selectedRecordUser.getPersonalNumber())){
                 Record record = new Record(selectedRecordUser.getPersonalNumber(), user.getPersonalNumber(), selectedNurse.getPersonalNumber(), user.getDivision(), data);
                 ServerMain.databaseHandler.addRecord(record);
 
                 int record_id = ServerMain.databaseHandler.getLatestRecordId();
                 Log log = new Log(user.getPersonalNumber(), record_id, ActionType.CREATE_RECORD.toString(), user.getName() + " created record with id=" + record_id + ".");
                 ServerMain.databaseHandler.addLog(log);
+            }
+            else{
+                communicator.send(new Request("error", "get", true, "Not allowed"));
             }
         }
         else if (type.equals("selectRecordUser") && actionType.equals("post")) {
@@ -173,7 +177,6 @@ public class RequestHandler {
             selectedNurse = nurses.get(0);
             communicator.send(new Request("selectedRecordUser", "post", true, "success"));
         }
-
     }
 
     private static List<User> getPatients() {
@@ -190,6 +193,35 @@ public class RequestHandler {
             System.out.println(records);
         }
         return records;
+    }
+
+    private boolean usersIsAllowedToReadRecord(User user, Record record){
+        String role = user.getRole();
+        String division = user.getDivision();
+        if(role.equals("Doctor")){
+            if(record.getDoctorPersonalNumber().equals(user.getPersonalNumber()) || division.equals(user.getDivision()))
+                return true;
+        }
+        else if(role.equals("Nurse")){
+            if(record.getNursePersonalNumber().equals(user.getPersonalNumber()) || division.equals(user.getDivision()))
+                return true;
+        }
+        else if(role.equals("Patient")){
+            if(record.getPatientPersonalNumber().equals(user.getPersonalNumber()));
+
+        }
+        else if(role.equals("Government")){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isUsersAllowedToWriteToRecord(User user, Record record){
+        String role = user.getRole();
+        if(role.equals("Doctor") || role.equals("Nurse")){
+            return record.getDoctorPersonalNumber().equals(user.getPersonalNumber()) || record.getNursePersonalNumber().equals(user.getPersonalNumber());
+        }
+        return false;
     }
 
 

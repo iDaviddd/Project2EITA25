@@ -41,9 +41,9 @@ public class Log {
         return log_id;
     }
 
-    public ActionType getActionType() {
+    public String getActionType() {
 
-        ActionType at = null;
+        /*ActionType at = null;
 
         switch (action_type.toLowerCase()) {
             case "add_user":
@@ -78,8 +78,8 @@ public class Log {
                 break;
             default:
                 break;
-        }
-        return at;
+        }*/
+        return action_type;
     }
 
     public String getAction() {

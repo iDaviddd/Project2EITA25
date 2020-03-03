@@ -66,7 +66,15 @@ public class CreateRecordView implements View{
                 NetworkHandler.communicator.send(new Request("selectNurse", "post", nurse.getText()));
                 NetworkHandler.communicator.receive();
                 NetworkHandler.communicator.send(new Request("add_record", "post", record.getText()));
-                viewController.switchScene("records");
+
+                if(NetworkHandler.communicator.receive().type.equals("error")){
+                    Alert a = new Alert(Alert.AlertType.ERROR);
+                    a.setContentText("Not allowed to add record to this user");
+                    a.show();
+                }
+                else{
+                    viewController.switchScene("records");
+                }
             }
         });
     }
