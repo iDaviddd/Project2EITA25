@@ -162,6 +162,22 @@ public class DatabaseHandler {
         }
     }
 
+    public Integer getLatestRecordId() {
+        String sql = "SELECT MAX(record_id) FROM records;";
+
+        Integer id = null;
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            rs.next();
+            id = rs.getInt("record_id");
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return id;
+    }
+
     /**
      * Delete a user from the database.
      *

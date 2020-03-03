@@ -66,6 +66,8 @@ public class RequestHandler {
             // Returns a list of all patients.
             List<User> patients = getPatients();
             System.out.println(patients);
+            Log log = new Log(user.getPersonalNumber(), -1, ActionType.LIST_ALL_USERS.toString(), user.getName() + " listed all users he have access to.");
+            ServerMain.databaseHandler.addLog(log);
             communicator.send(new Request("users", "get", true, "start"));
             patients.forEach(a -> {
 
@@ -98,14 +100,17 @@ public class RequestHandler {
             List<User> doctors = ServerMain.databaseHandler.findUsers("personal_number", selectedRecord.getDoctorPersonalNumber());
             List<User> nurses = ServerMain.databaseHandler.findUsers("personal_number", selectedRecord.getNursePersonalNumber());
 
+            Log log = new Log(user.getPersonalNumber(), selectedRecord.getRecordId(), ActionType.READ_RECORD.toString(), user.getName() + " viewed a record.");
+            ServerMain.databaseHandler.addLog(log);
+
             String patientName = "";
             String doctorName = "";
-            String nuseName = "";
+            String nurseName = "";
 
             if (patients.size() == 1 && doctors.size() == 1 && nurses.size() == 1) {
                 patientName = patients.get(0).getName();
                 doctorName = doctors.get(0).getName();
-                nuseName = nurses.get(0).getName();
+                nurseName = nurses.get(0).getName();
             }
 
             communicator.send(new Request("record", "get", true, selectedRecord.getPatientPersonalNumber()));
@@ -115,17 +120,21 @@ public class RequestHandler {
             communicator.send(new Request("record", "get", true, doctorName));
 
             communicator.send(new Request("record", "get", true, selectedRecord.getNursePersonalNumber()));
-            communicator.send(new Request("record", "get", true, nuseName));
+            communicator.send(new Request("record", "get", true, nurseName));
 
             communicator.send(new Request("record", "get", true, selectedRecord.getRecord()));
         }
         else if (type.equals("record") && actionType.equals("post")){
 
             //if(allowed to write to record){}
+            Log log = new Log(user.getPersonalNumber(), selectedRecord.getRecordId(), ActionType.MODIFY_RECORD.toString(), user.getName() + " modified a record.");
+            ServerMain.databaseHandler.addLog(log);
             ServerMain.databaseHandler.updateRecord("record", data, "record_id", selectedRecord.getRecordId().toString());
         }
         else if (type.equals("record") && actionType.equals("delete")){
             //if(allowed to delete record){}
+            Log log = new Log(user.getPersonalNumber(), selectedRecord.getRecordId(), ActionType.REMOVE_RECORD.toString(), user.getName() + " deleted record.");
+            ServerMain.databaseHandler.addLog(log);
             ServerMain.databaseHandler.deleteRecord(selectedRecord.getRecordId());
             selectedRecord = null;
         }
@@ -133,6 +142,10 @@ public class RequestHandler {
             if(user.getRole().equals("Doctor")){
                 Record record = new Record(selectedRecordUser.getPersonalNumber(), user.getPersonalNumber(), selectedNurse.getPersonalNumber(), user.getDivision(), data);
                 ServerMain.databaseHandler.addRecord(record);
+
+                int record_id = ServerMain.databaseHandler.getLatestRecordId();
+                Log log = new Log(user.getPersonalNumber(), record_id, ActionType.CREATE_RECORD.toString(), user.getName() + " created record with id=" + record_id + ".");
+                ServerMain.databaseHandler.addLog(log);
             }
         }
         else if (type.equals("selectRecordUser") && actionType.equals("post")) {
