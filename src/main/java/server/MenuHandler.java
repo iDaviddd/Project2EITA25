@@ -74,6 +74,7 @@ public class MenuHandler {
                 System.out.print("Personal number:");
                 personal_number = in.nextLine();
                 databaseHandler.deleteUser(personal_number);
+                System.out.println("User deleted from database");
                 break;
             case "help":
                 System.out.println("--------- HELP --------");
@@ -84,6 +85,7 @@ public class MenuHandler {
                 System.out.println("create - Create a user");
                 System.out.println("find - Search the user table for a user");
                 System.out.println("add_record - Add a record");
+                System.out.println("del_user - Deletes a user from database");
                 break;
             default:
                 System.out.println("Unknown command. Type 'help' for help.");
