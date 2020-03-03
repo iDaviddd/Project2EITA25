@@ -58,7 +58,7 @@ public class Log {
             case "lookup_user":
                 at = ActionType.LOOKUP_USER;
                 break;
-            case "list_all_users":
+            case "list_user":
                 at = ActionType.LIST_ALL_USERS;
                 break;
             case "create_record":
