@@ -65,7 +65,29 @@ public class DatabaseHandler {
     }
 
     /**
+     * Update a record.
+     * @param change_column column to change
+     * @param value new value
+     * @param search_column column to search for record
+     * @param search_term is the term to identify the record
+     */
+    public void updateRecord(String change_column, String value, String search_column, String search_term) {
+        String sql = "UPDATE records SET " + change_column + " = ? WHERE " + search_column + " = ?";
+
+        try {
+            Connection conn = DriverManager.getConnection(url);
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, value);
+            pstmt.setString(2, search_term);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    /**
      * Record to be added to database.
+     *
      * @param r to be added to database
      */
     public void addRecord(Record r) {
@@ -86,6 +108,7 @@ public class DatabaseHandler {
 
     /**
      * Add a log to the database.
+     *
      * @param log to be added to database
      */
     public void addLog(Log log) {
@@ -107,6 +130,7 @@ public class DatabaseHandler {
 
     /**
      * Add a user to the database.
+     *
      * @param user object to be added to database.
      */
     public void addUser(User user) {
@@ -136,6 +160,7 @@ public class DatabaseHandler {
 
     /**
      * Delete a user from the database.
+     *
      * @param id of user to be deleted
      */
     public void deleteUser(int id) {
@@ -153,7 +178,8 @@ public class DatabaseHandler {
 
     /**
      * Find all users which fulfill the requirements.
-     * @param column to search for
+     *
+     * @param column      to search for
      * @param search_term to search for
      * @return a set of all users which fulfill the requirements.
      */
@@ -187,7 +213,8 @@ public class DatabaseHandler {
 
     /**
      * Find all records which fulfill the requirements.
-     * @param column to search for
+     *
+     * @param column      to search for
      * @param search_term to search for
      * @return a set of all records which fulfill the requirements.
      */
@@ -221,7 +248,8 @@ public class DatabaseHandler {
 
     /**
      * Find all logs which fulfill the requirements.
-     * @param column to search for
+     *
+     * @param column      to search for
      * @param search_term to search for
      * @return a set of logs.
      */
