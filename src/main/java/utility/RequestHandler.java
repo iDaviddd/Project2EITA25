@@ -129,6 +129,7 @@ public class RequestHandler {
                 ServerMain.databaseHandler.addLog(log);
                 ServerMain.databaseHandler.deleteRecord(selectedRecord.getRecordId());
                 selectedRecord = null;
+                communicator.send(new Request("success", "get", true, "success"));
             }
             else{
                 communicator.send(new Request("error", "get", true, "Not allowed"));
@@ -138,6 +139,7 @@ public class RequestHandler {
         else if (type.equals("add_record") && actionType.equals("post")){
             System.out.println(user.getPersonalNumber());
             Set<String> patients = ServerMain.databaseHandler.findPatients(user.getPersonalNumber());
+            System.out.println(patients);
 
 
             if(user.getRole().equals("Doctor") && patients.contains(selectedRecordUser.getPersonalNumber())){
@@ -147,6 +149,7 @@ public class RequestHandler {
                 int record_id = ServerMain.databaseHandler.getLatestRecordId();
                 Log log = new Log(user.getPersonalNumber(), record_id, ActionType.CREATE_RECORD.toString(), user.getName() + " created record with id=" + record_id + ".");
                 ServerMain.databaseHandler.addLog(log);
+               communicator.send(new Request("success", "get", true, "Success"));
             }
             else{
                 communicator.send(new Request("error", "get", true, "Not allowed"));
@@ -174,8 +177,10 @@ public class RequestHandler {
             if (nurses.size() != 1) {
                 communicator.send(new Request("selectedRecordUser", "post", true, "failed"));
             }
-            selectedNurse = nurses.get(0);
-            communicator.send(new Request("selectedRecordUser", "post", true, "success"));
+            else{
+                selectedNurse = nurses.get(0);
+                communicator.send(new Request("selectedRecordUser", "post", true, "success"));
+            }
         }
     }
 
@@ -199,15 +204,16 @@ public class RequestHandler {
         String role = user.getRole();
         String division = user.getDivision();
         if(role.equals("Doctor")){
-            if(record.getDoctorPersonalNumber().equals(user.getPersonalNumber()) || division.equals(user.getDivision()))
+            if(user.getPersonalNumber().equals(record.getDoctorPersonalNumber()) || division.equals(record.getDivision()))
                 return true;
         }
         else if(role.equals("Nurse")){
-            if(record.getNursePersonalNumber().equals(user.getPersonalNumber()) || division.equals(user.getDivision()))
+            if(user.getPersonalNumber().equals(record.getNursePersonalNumber()) || division.equals(record.getDivision()))
                 return true;
         }
         else if(role.equals("Patient")){
-            if(record.getPatientPersonalNumber().equals(user.getPersonalNumber()));
+            if(user.getPersonalNumber().equals(record.getPatientPersonalNumber()))
+                return true;
 
         }
         else if(role.equals("Government")){

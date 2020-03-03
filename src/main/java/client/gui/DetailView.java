@@ -116,7 +116,7 @@ public class DetailView implements View {
             recordText.editableProperty().setValue(true);
             bodyBox.getChildren().add(saveButton);
         }
-        if(ViewController.role.equals("Government") && !bodyBox.getChildren().contains(saveButton)){
+        if(ViewController.role.equals("Government") && !bodyBox.getChildren().contains(deleteButton)){
             bodyBox.getChildren().add(deleteButton);
         }
 

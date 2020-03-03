@@ -42,43 +42,6 @@ public class Log {
     }
 
     public String getActionType() {
-
-        /*ActionType at = null;
-
-        switch (action_type.toLowerCase()) {
-            case "add_user":
-                at = ActionType.ADD_USER;
-                break;
-            case "modify_user":
-                at = ActionType.MODIFY_USER;
-                break;
-            case "remove_user":
-                at = ActionType.REMOVE_USER;
-                break;
-            case "lookup_user":
-                at = ActionType.LOOKUP_USER;
-                break;
-            case "list_user":
-                at = ActionType.LIST_ALL_USERS;
-                break;
-            case "create_record":
-                at = ActionType.CREATE_RECORD;
-                break;
-            case "read_record":
-                at = ActionType.READ_RECORD;
-                break;
-            case "modify_record":
-                at = ActionType.MODIFY_RECORD;
-                break;
-            case "remove_record":
-                at = ActionType.REMOVE_RECORD;
-                break;
-            case "list_record":
-                at = ActionType.LIST_RECORD;
-                break;
-            default:
-                break;
-        }*/
         return action_type;
     }
 

@@ -19,14 +19,6 @@ public class Communicator {
         this.reader = reader;
     }
 
-   /* public void send(String message) {
-        Gson gson = new Gson();
-        System.out.println("Sending: " + message);
-        String json = gson.toJson(message);
-        writer.write(json + "\n");
-        writer.flush();
-    }*/
-
     public void send(Request request) {
         Gson gson = new Gson();
         System.out.println("Sending: " + request);

@@ -35,16 +35,12 @@ public class CreateRecordView implements View{
 
         VBox container = new VBox(5);
         container.setPadding(new Insets(5,5,5,5));
-        /*Label textPatient = new Label("Patient name");
-        TextField patient = new TextField();
-        Label textPersonalNumber = new Label("Patient's personal identity number");
-        TextField personalNumber = new TextField();*/
         Label textNurse = new Label("Nurse's personal identity number");
         TextField nurse = new TextField();
         Label textRecord = new Label("Record");
         TextArea record = new TextArea();
 
-        container.getChildren().addAll(/*textPatient, patient, textPersonalNumber, personalNumber, */textNurse, nurse, textRecord, record, buttons);
+        container.getChildren().addAll(textNurse, nurse, textRecord, record, buttons);
 
 
         borderPane.setCenter(container);

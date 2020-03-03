@@ -37,7 +37,7 @@ public class DatabaseHandler {
                 System.out.println("The driver name is " + meta.getDriverName());
             }
         } catch (SQLException e) {
-            System.out.println("Errorr: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
@@ -181,7 +181,8 @@ public class DatabaseHandler {
     }
 
     public Integer getLatestRecordId() {
-        String sql = "SELECT MAX(record_id) FROM records;";
+        String sql = "SELECT * FROM records ORDER BY record_id DESC LIMIT 1;";
+        //String sql = "SELECT * FROM records WHERE record_id = MAX(record_id);";
 
         Integer id = null;
         try {
@@ -338,12 +339,12 @@ public class DatabaseHandler {
     public HashSet<String> findPatients(String doctor_personal_number) {
         HashSet<String> result = new HashSet<String>();
 
-        String sql = "SELECT * FROM treating WHERE doctor_personal_number=?;";
+        String sql = "SELECT * FROM treating WHERE doctor_personal_number='"+doctor_personal_number+"';";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, doctor_personal_number);
-            ResultSet rs = pstmt.executeQuery(sql);
+            //pstmt.setString(1, doctor_personal_number);
 
+            ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 String patient_personal_number = rs.getString("patient_personal_number");
                 result.add(patient_personal_number);
