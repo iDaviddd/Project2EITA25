@@ -3,11 +3,11 @@ package utility;
 public class Record {
 
     private Integer record_id;
-    private String patient_personal_number;
-    private String doctor_personal_number;
-    private String nurse_personal_number;
-    private String division;
-    private String record;
+    private final String patient_personal_number;
+    private final String doctor_personal_number;
+    private final String nurse_personal_number;
+    private final String division;
+    private final String record;
 
     public Record(String patient_personal_number, String doctor_personal_number, String nurse_personal_number,
                   String division, String record) {

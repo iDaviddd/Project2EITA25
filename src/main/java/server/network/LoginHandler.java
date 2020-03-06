@@ -21,7 +21,7 @@ class LoginHandler {
             return null;
         }
 
-        User user = findUser((String) username.data);
+        User user = findUser(username.data);
         if (user == null) {
             System.out.println("User not found");
             communicator.send(new Request("authentication", "post", "false"));
@@ -49,7 +49,7 @@ class LoginHandler {
             return null;
         }
 
-        if (LoginHandler.testUserCreditials(user, response, (String) clientResponse.data, (String) OTP.data)) {
+        if (LoginHandler.testUserCreditials(user, response, clientResponse.data, OTP.data)) {
             communicator.send(new Request("authentication", "post", "true"));
             communicator.send(new Request("role", "post", user.getRole()));
             System.out.println("Authenticated");
@@ -76,7 +76,7 @@ class LoginHandler {
         return TOTP.getOTP(hexKey);
     }
 
-    public static User findUser(String username) {
+    private static User findUser(String username) {
         List<User> users = ServerMain.databaseHandler.findUsers("personal_number", username);
         if (users.size() != 1) return null;
         return users.get(0);

@@ -18,7 +18,7 @@ import utility.User;
 
 public class DatabaseHandler {
 
-    private String url;
+    private final String url;
     private Connection conn;
 
     public DatabaseHandler(String url) {
@@ -122,7 +122,7 @@ public class DatabaseHandler {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, log.getPersonalNumber());
             pstmt.setInt(2, log.getRecordId());
-            pstmt.setString(3, log.getActionType().toString());
+            pstmt.setString(3, log.getActionType());
             pstmt.setString(4, log.getAction());
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -147,7 +147,7 @@ public class DatabaseHandler {
             pstmt.setString(4, user.getPassword());
             pstmt.setString(5, user.getSalt());
 
-            if (user.getDivision() != "") {
+            if (!user.getDivision().equals("")) {
                 pstmt.setString(6, user.getDivision());
             } else {
                 pstmt.setString(6, null);
@@ -282,7 +282,7 @@ public class DatabaseHandler {
                 String nurse_personal_number = rs.getString("nurse_personal_number");
                 String division = rs.getString("division");
                 String record = rs.getString("record");
-                Integer record_id = rs.getInt("record_id");
+                int record_id = rs.getInt("record_id");
                 Record r = new Record(patient_personal_number, doctor_personal_number, nurse_personal_number, division,
                         record, record_id);
                 list.add(r);
@@ -331,7 +331,7 @@ public class DatabaseHandler {
     }
 
     public HashSet<String> findPatients(String doctor_personal_number) {
-        HashSet<String> result = new HashSet<String>();
+        HashSet<String> result = new HashSet<>();
 
         String sql = "SELECT * FROM treating WHERE doctor_personal_number='" + doctor_personal_number + "';";
         try {
@@ -404,7 +404,7 @@ public class DatabaseHandler {
 
             //Loop through the result set
             while (rs.next()) {
-                System.out.println(rs.getInt("log_id") + "\t" + rs.getString("timestamp").toString() + "\t" + rs.getString("user_personal_number") + "\t"
+                System.out.println(rs.getInt("log_id") + "\t" + rs.getString("timestamp") + "\t" + rs.getString("user_personal_number") + "\t"
                         + rs.getString("record_id") + "\t" + rs.getString("action_type") + "\t"
                         + rs.getString("action"));
             }

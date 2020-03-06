@@ -7,7 +7,7 @@ import utility.*;
 
 
 public class NetworkHandler implements Runnable {
-    private ServerSocket serverSocket = null;
+    private ServerSocket serverSocket;
     private static int numConnectedClients = 0;
 
     public NetworkHandler(ServerSocket ss) {
@@ -18,8 +18,8 @@ public class NetworkHandler implements Runnable {
     public void run() {
         try {
 
-            PrintWriter out = null;
-            BufferedReader in = null;
+            PrintWriter out;
+            BufferedReader in;
 
             SSLSocket socket = (SSLSocket) serverSocket.accept();
             newListener();

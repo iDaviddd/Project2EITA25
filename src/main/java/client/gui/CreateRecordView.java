@@ -1,8 +1,6 @@
 package client.gui;
 
 import client.network.NetworkHandler;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -14,9 +12,9 @@ import utility.Request;
 
 
 public class CreateRecordView implements View {
-    private Parent parent;
-    TextField nurse;
-    TextArea record;
+    private final Parent parent;
+    private final TextField nurse;
+    private final TextArea record;
 
     CreateRecordView(ViewController viewController) {
 
@@ -49,27 +47,19 @@ public class CreateRecordView implements View {
 
         viewController.setTitle("Create");
 
-        backButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                viewController.switchScene("records", false);
-            }
-        });
+        backButton.setOnAction(event -> viewController.switchScene("records", false));
 
-        createButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                NetworkHandler.communicator.send(new Request("selectNurse", "post", nurse.getText()));
-                NetworkHandler.communicator.receive();
-                NetworkHandler.communicator.send(new Request("add_record", "post", record.getText()));
+        createButton.setOnAction(event -> {
+            NetworkHandler.communicator.send(new Request("selectNurse", "post", nurse.getText()));
+            NetworkHandler.communicator.receive();
+            NetworkHandler.communicator.send(new Request("add_record", "post", record.getText()));
 
-                if (NetworkHandler.communicator.receive().type.equals("error")) {
-                    Alert a = new Alert(Alert.AlertType.ERROR);
-                    a.setContentText("Not allowed to add record to this user");
-                    a.show();
-                } else {
-                    viewController.switchScene("records");
-                }
+            if (NetworkHandler.communicator.receive().type.equals("error")) {
+                Alert a = new Alert(Alert.AlertType.ERROR);
+                a.setContentText("Not allowed to add record to this user");
+                a.show();
+            } else {
+                viewController.switchScene("records");
             }
         });
     }

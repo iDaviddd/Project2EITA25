@@ -3,8 +3,6 @@ package client.gui;
 import client.network.NetworkHandler;
 import utility.Hasher;
 import utility.Request;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -15,7 +13,7 @@ import javafx.scene.text.TextAlignment;
 
 public class LoginView implements View {
 
-    private Parent parent;
+    private final Parent parent;
 
     LoginView(ViewController viewController) {
 
@@ -45,17 +43,14 @@ public class LoginView implements View {
 
         loginText.getChildren().addAll(textUsername, username, textPassword, password, textOTP, OTP, loginButton);
 
-        loginButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
+        loginButton.setOnAction(event -> {
 
-                if (login(username.getText(), password.getText(), OTP.getText())) {
-                    viewController.switchScene("patients");
-                } else {
-                    Alert a = new Alert(Alert.AlertType.ERROR);
-                    a.setContentText("Wrong username, password or OTP");
-                    a.show();
-                }
+            if (login(username.getText(), password.getText(), OTP.getText())) {
+                viewController.switchScene("patients");
+            } else {
+                Alert a = new Alert(Alert.AlertType.ERROR);
+                a.setContentText("Wrong username, password or OTP");
+                a.show();
             }
         });
 
@@ -89,8 +84,8 @@ public class LoginView implements View {
             return false;
         }
 
-        String hashedPassword = Hasher.HashPassword(password, (String) salt.data);
-        String response = Hasher.HashPassword(hashedPassword, (String) challenge.data);
+        String hashedPassword = Hasher.HashPassword(password, salt.data);
+        String response = Hasher.HashPassword(hashedPassword, challenge.data);
 
         NetworkHandler.communicator.send(new Request("challenge response", "post", response));
         NetworkHandler.communicator.send(new Request("OTP", "post", OTP));

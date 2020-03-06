@@ -7,6 +7,7 @@ import server.network.SocketFactory;
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLServerSocket;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class ServerMain {
@@ -32,7 +33,7 @@ public class ServerMain {
 
         try {
             ServerSocketFactory ssf = SocketFactory.getServerSocketFactory(type, KeyStorePassword);
-            SSLServerSocket ss = (SSLServerSocket) ssf.createServerSocket(port);
+            SSLServerSocket ss = (SSLServerSocket) Objects.requireNonNull(ssf).createServerSocket(port);
             ss.setNeedClientAuth(false); // disables client authentication
 
             new NetworkHandler(ss);

@@ -4,12 +4,12 @@ import java.sql.Timestamp;
 
 public class Log {
 
-    private String personal_number;
-    private int record_id;
-    private Integer log_id;
-    private String action_type;
-    private String action;
-    private Timestamp timestamp;
+    private final String personal_number;
+    private final int record_id;
+    private final Integer log_id;
+    private final String action_type;
+    private final String action;
+    private final Timestamp timestamp;
 
     public Log(String personal_number, int record_id, String action_type, String action) {
         this.personal_number = personal_number;

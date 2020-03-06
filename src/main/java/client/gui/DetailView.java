@@ -3,8 +3,6 @@ package client.gui;
 import client.network.NetworkHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -13,15 +11,15 @@ import javafx.scene.layout.VBox;
 import utility.Request;
 
 public class DetailView implements View {
-    private Parent parent;
+    private final Parent parent;
     private ObservableList<String> recordStrings = FXCollections.observableArrayList("", "");
-    private TextField patientText;
-    private TextField doctorText;
-    private TextField nurseText;
-    private TextArea recordText;
-    private VBox bodyBox;
-    private Button saveButton;
-    private Button deleteButton;
+    private final TextField patientText;
+    private final TextField doctorText;
+    private final TextField nurseText;
+    private final TextArea recordText;
+    private final VBox bodyBox;
+    private final Button saveButton;
+    private final Button deleteButton;
 
     DetailView(ViewController viewController) {
 
@@ -53,40 +51,29 @@ public class DetailView implements View {
         recordText.editableProperty().setValue(false);
         Button backButton = new Button("Back");
 
-        backButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
+        backButton.setOnAction(event -> viewController.switchScene("records"));
+
+        saveButton = new Button("Save");
+        saveButton.setOnAction(event -> {
+            NetworkHandler.communicator.send(new Request("record", "post", recordText.getText()));
+            if (NetworkHandler.communicator.receive().type.equals("error")) {
+                Alert a = new Alert(Alert.AlertType.ERROR);
+                a.setContentText("Not allowed to write to record");
+                a.show();
+            } else {
                 viewController.switchScene("records");
             }
         });
 
-        saveButton = new Button("Save");
-        saveButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                NetworkHandler.communicator.send(new Request("record", "post", recordText.getText()));
-                if (NetworkHandler.communicator.receive().type.equals("error")) {
-                    Alert a = new Alert(Alert.AlertType.ERROR);
-                    a.setContentText("Not allowed to write to record");
-                    a.show();
-                } else {
-                    viewController.switchScene("records");
-                }
-            }
-        });
-
         deleteButton = new Button("Delete");
-        deleteButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                NetworkHandler.communicator.send(new Request("record", "delete", ""));
-                if (NetworkHandler.communicator.receive().type.equals("error")) {
-                    Alert a = new Alert(Alert.AlertType.ERROR);
-                    a.setContentText("Not allowed to delete record");
-                    a.show();
-                } else {
-                    viewController.switchScene("records");
-                }
+        deleteButton.setOnAction(event -> {
+            NetworkHandler.communicator.send(new Request("record", "delete", ""));
+            if (NetworkHandler.communicator.receive().type.equals("error")) {
+                Alert a = new Alert(Alert.AlertType.ERROR);
+                a.setContentText("Not allowed to delete record");
+                a.show();
+            } else {
+                viewController.switchScene("records");
             }
         });
 

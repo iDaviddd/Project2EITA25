@@ -2,10 +2,10 @@ package utility;
 
 public class Request {
 
-    public String type;
-    public String actionType;
-    public boolean reply;
-    public String data;
+    public final String type;
+    public final String actionType;
+    public final boolean reply;
+    public final String data;
 
 
     public Request(String type, String actionType, String data) {

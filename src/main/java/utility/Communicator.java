@@ -3,16 +3,13 @@ package utility;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSyntaxException;
 
 public class Communicator {
-    private BufferedReader reader;
-    private PrintWriter writer;
+    private final BufferedReader reader;
+    private final PrintWriter writer;
 
     public Communicator(BufferedReader reader, PrintWriter writer) {
         this.writer = writer;
@@ -37,7 +34,7 @@ public class Communicator {
             if (result != null) {
                 System.out.println("Received: " + result.type + " " + result.actionType + " " + result.data);
             } else {
-                System.out.println("Received: " + result);
+                System.out.println("Received: " + null);
             }
 
         } catch (JsonSyntaxException e) {

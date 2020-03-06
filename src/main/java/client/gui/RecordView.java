@@ -3,15 +3,12 @@ package client.gui;
 import client.network.NetworkHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -24,11 +21,11 @@ import java.util.List;
 
 public class RecordView implements View {
 
-    private Parent parent;
+    private final Parent parent;
     private String recordChosen;
-    private ObservableList<String> recordsString = FXCollections.observableArrayList();
-    private HBox buttonBox;
-    private Button newRecordButton;
+    private final ObservableList<String> recordsString = FXCollections.observableArrayList();
+    private final HBox buttonBox;
+    private final Button newRecordButton;
 
     RecordView(ViewController viewController) {
         Label label = new Label("Records");
@@ -63,38 +60,19 @@ public class RecordView implements View {
 
         viewController.setTitle("Records");
 
-        listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                chooseButton.setDisable(false);
-            }
+        listView.setOnMouseClicked(event -> chooseButton.setDisable(false));
+
+        chooseButton.setOnAction(event -> {
+            NetworkHandler.communicator.send(new Request("selectRecord", "post", listView.getSelectionModel().getSelectedItem()));
+            if (NetworkHandler.communicator.receive().data.equals("success")) {
+                viewController.switchScene("detail");
+            }  //failed
+
         });
 
-        chooseButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                NetworkHandler.communicator.send(new Request("selectRecord", "post", listView.getSelectionModel().getSelectedItem()));
-                if (NetworkHandler.communicator.receive().data.equals("success")) {
-                    viewController.switchScene("detail");
-                } else {
-                    //failed
-                }
-            }
-        });
+        backButton.setOnAction(event -> viewController.switchScene("patients", false));
 
-        backButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                viewController.switchScene("patients", false);
-            }
-        });
-
-        newRecordButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                viewController.switchScene("create", false);
-            }
-        });
+        newRecordButton.setOnAction(event -> viewController.switchScene("create", false));
     }
 
     public Parent getParent() {
@@ -114,10 +92,9 @@ public class RecordView implements View {
         if (response.type.equals("records") && response.actionType.equals("get") && response.reply && response.data.equals("start")) {
             response = NetworkHandler.communicator.receive();
             while (response.data != null) {
-                records.add((String) response.data);
+                records.add(response.data);
                 response = NetworkHandler.communicator.receive();
             }
-        } else {
         }
 
         recordsString.setAll(records);

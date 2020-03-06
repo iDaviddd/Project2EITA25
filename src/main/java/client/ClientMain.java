@@ -9,7 +9,7 @@ public class ClientMain extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws InterruptedException {
-		new ViewController(this);
+		new ViewController();
 
 		String host = "localhost";
 		int port = 9876;

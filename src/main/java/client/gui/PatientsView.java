@@ -3,15 +3,12 @@ package client.gui;
 import client.network.NetworkHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -22,8 +19,8 @@ import java.util.*;
 
 public class PatientsView implements View{
     private List<User> patients;
-    private ObservableList<String> patientsString = FXCollections.observableArrayList();
-    private Parent parent;
+    private final ObservableList<String> patientsString = FXCollections.observableArrayList();
+    private final Parent parent;
 
 
 
@@ -53,26 +50,16 @@ public class PatientsView implements View{
 
         viewController.setTitle("Records");
 
-        listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                chooseButton.setDisable(false);
+        listView.setOnMouseClicked(event -> chooseButton.setDisable(false));
+
+        chooseButton.setOnAction(event -> {
+            NetworkHandler.communicator.send(new Request("selectRecordUser", "post", listView.getSelectionModel().getSelectedItem()));
+            if(NetworkHandler.communicator.receive().data.equals("success")){
+                viewController.switchScene("records");
             }
-        });
-
-        chooseButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                NetworkHandler.communicator.send(new Request("selectRecordUser", "post", listView.getSelectionModel().getSelectedItem()));
-                if(NetworkHandler.communicator.receive().data.equals("success")){
-                    viewController.switchScene("records");
-                }
-                else{
-                    //failed
-                }
+            //failed
 
 
-            }
         });
     }
 
@@ -89,11 +76,10 @@ public class PatientsView implements View{
         if(response.type.equals("users") && response.actionType.equals("get") && response.reply  && response.data.equals("start")){
             response = NetworkHandler.communicator.receive();
             while (response.data != null){
-                personalNumbers.add((String) response.data);
+                personalNumbers.add(response.data);
                 response = NetworkHandler.communicator.receive();
             }
         }
-        else{}
 
         patientsString.setAll(personalNumbers);
     }

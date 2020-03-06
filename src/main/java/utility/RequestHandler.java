@@ -44,17 +44,13 @@ public class RequestHandler {
                 boolean send = false;
                 switch (user.getRole()) {
                     case "Doctor":
-                        send = true;
-                        break;
+                    case "Government":
                     case "Nurse":
                         send = true;
                         break;
                     case "Patient":
                         if (a.getPersonalNumber().equals(user.getPersonalNumber()))
                             send = true;
-                        break;
-                    case "Government":
-                        send = true;
                         break;
                     default:
                         break;

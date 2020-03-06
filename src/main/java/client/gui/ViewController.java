@@ -1,6 +1,5 @@
 package client.gui;
 
-import client.ClientMain;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.scene.Scene;
@@ -10,12 +9,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ViewController extends Stage {
-    private Scene scene;
-    private Map<String, View> views = new HashMap<>();
+    private final Scene scene;
+    private final Map<String, View> views = new HashMap<>();
     public ObservableMap<String, String> user = FXCollections.observableHashMap();
     static String role = "";
 
-    public ViewController(ClientMain clientMain) {
+    public ViewController() {
 
         views.put("login", new LoginView(this));
         views.put("patients", new PatientsView(this));

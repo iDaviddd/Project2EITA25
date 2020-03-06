@@ -6,13 +6,13 @@ import java.security.SecureRandom;
 public class User {
 
     private int id;
-    private String name;
-    private String role;
-    private String personal_number;
-    private String password;
-    private String salt;
-    private String division;
-    private String otpSecret;
+    private final String name;
+    private final String role;
+    private final String personal_number;
+    private final String password;
+    private final String salt;
+    private final String division;
+    private final String otpSecret;
 
     public User(String name, String role, String personal_number, String password, String salt, String division,
                 int id, String otpSecret) {
