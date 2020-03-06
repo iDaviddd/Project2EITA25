@@ -52,7 +52,6 @@ public class NetworkHandler {
     private boolean connect(SSLSocketFactory factory, String host, int port) {
         try {
             socket = (SSLSocket) factory.createSocket(host, port);
-            socket.setEnabledCipherSuites(new String[]{"TLS_DHE_DSS_WITH_AES_256_CBC_SHA256"});
             socket.startHandshake();
             return true;
         } catch (IOException e) {

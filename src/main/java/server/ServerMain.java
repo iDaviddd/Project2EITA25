@@ -22,12 +22,10 @@ public class ServerMain {
 		Scanner in = new Scanner(System.in);
 
 		System.out.print("Enter path to database file: ");
-		//String pathToDataBase = in.nextLine();
-		String pathToDataBase = "live.db";
+		String pathToDataBase = in.nextLine();
 
 		System.out.print("Enter password to keystore: ");
-		//String KeyStorePassword = in.nextLine();
-		String KeyStorePassword = "password";
+		String KeyStorePassword = in.nextLine();
 
 		databaseHandler = new DatabaseHandler(pathToDataBase);
 		System.out.println("Database initialized.");
@@ -35,7 +33,6 @@ public class ServerMain {
 		try {
 			ServerSocketFactory ssf = SocketFactory.getServerSocketFactory(type, KeyStorePassword);
 			SSLServerSocket ss =  (SSLServerSocket) ssf.createServerSocket(port);
-			//ss.setEnabledCipherSuites(new String[] {"TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384"});
 			ss.setNeedClientAuth(false); // disables client authentication
 
 			new NetworkHandler(ss);

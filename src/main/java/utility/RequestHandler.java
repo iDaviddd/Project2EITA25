@@ -110,9 +110,10 @@ public class RequestHandler {
 
             if(isUsersAllowedToWriteToRecord(user, selectedRecord)){
                 Log log = new Log(user.getPersonalNumber(), selectedRecord.getRecordId(), ActionType.MODIFY_RECORD.toString(), user.getName() + " modified a record.");
-                ServerMain.databaseHandler.addLog(log);
+
                 ServerMain.databaseHandler.updateRecord("record", data, "record_id", selectedRecord.getRecordId().toString());
                 communicator.send(new Request("success", "get", true, "Success"));
+                ServerMain.databaseHandler.addLog(log);
             }
             else {
                 communicator.send(new Request("error", "get", true, "Not allowed"));
