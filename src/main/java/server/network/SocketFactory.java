@@ -11,7 +11,7 @@ public class SocketFactory {
 
     public static ServerSocketFactory getServerSocketFactory(String type, String password) {
         if (type.equals("TLS")) {
-            SSLServerSocketFactory ssf = null;
+            SSLServerSocketFactory ssf;
             try {
                 SSLContext ctx = SSLContext.getInstance("TLS");
                 KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");

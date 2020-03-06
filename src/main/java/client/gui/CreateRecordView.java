@@ -13,15 +13,17 @@ import javafx.scene.text.TextAlignment;
 import utility.Request;
 
 
-public class CreateRecordView implements View{
+public class CreateRecordView implements View {
     private Parent parent;
+    TextField nurse;
+    TextArea record;
 
-    CreateRecordView(ViewController viewController){
+    CreateRecordView(ViewController viewController) {
 
         Label label = new Label("Create record");
         label.setTextAlignment(TextAlignment.CENTER);
         label.setFont(new Font(label.getFont().getName(), 20));
-        label.setPadding(new Insets(5,0,10,0));
+        label.setPadding(new Insets(5, 0, 10, 0));
 
         BorderPane borderPane = new BorderPane();
 
@@ -32,11 +34,11 @@ public class CreateRecordView implements View{
         buttons.getButtons().addAll(backButton, createButton);
 
         VBox container = new VBox(5);
-        container.setPadding(new Insets(5,5,5,5));
+        container.setPadding(new Insets(5, 5, 5, 5));
         Label textNurse = new Label("Nurse's personal identity number");
-        TextField nurse = new TextField();
+        nurse = new TextField();
         Label textRecord = new Label("Record");
-        TextArea record = new TextArea();
+        record = new TextArea();
 
         container.getChildren().addAll(textNurse, nurse, textRecord, record, buttons);
 
@@ -61,12 +63,11 @@ public class CreateRecordView implements View{
                 NetworkHandler.communicator.receive();
                 NetworkHandler.communicator.send(new Request("add_record", "post", record.getText()));
 
-                if(NetworkHandler.communicator.receive().type.equals("error")){
+                if (NetworkHandler.communicator.receive().type.equals("error")) {
                     Alert a = new Alert(Alert.AlertType.ERROR);
                     a.setContentText("Not allowed to add record to this user");
                     a.show();
-                }
-                else{
+                } else {
                     viewController.switchScene("records");
                 }
             }
@@ -75,10 +76,11 @@ public class CreateRecordView implements View{
 
     @Override
     public void update() {
-
+        nurse.setText("");
+        record.setText("");
     }
 
-    public Parent getParent(){
+    public Parent getParent() {
         return parent;
     }
 }

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-
 import utility.Log;
 import utility.Record;
 import utility.User;
@@ -20,7 +19,7 @@ import utility.User;
 public class DatabaseHandler {
 
     private String url;
-    Connection conn;
+    private Connection conn;
 
     public DatabaseHandler(String url) {
         this.url = "jdbc:sqlite:" + url;
@@ -334,7 +333,7 @@ public class DatabaseHandler {
     public HashSet<String> findPatients(String doctor_personal_number) {
         HashSet<String> result = new HashSet<String>();
 
-        String sql = "SELECT * FROM treating WHERE doctor_personal_number='"+doctor_personal_number+"';";
+        String sql = "SELECT * FROM treating WHERE doctor_personal_number='" + doctor_personal_number + "';";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             //pstmt.setString(1, doctor_personal_number);
@@ -422,7 +421,7 @@ public class DatabaseHandler {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
 
-            while(rs.next()) {
+            while (rs.next()) {
                 System.out.println("[Treatment] " + rs.getString("doctor_personal_number") + " is treating " + rs.getString("patient_personal_number"));
             }
         } catch (SQLException e) {

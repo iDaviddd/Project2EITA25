@@ -11,44 +11,44 @@ import java.util.Scanner;
 
 public class ServerMain {
 
-	public static DatabaseHandler databaseHandler;
+    public static DatabaseHandler databaseHandler;
 
-	public static void main(String[] args) {
-		System.out.println("Starting server...");
-		
-		int port = 9876;
-		String type = "TLS";
+    public static void main(String[] args) {
+        System.out.println("Starting server...");
 
-		Scanner in = new Scanner(System.in);
+        int port = 9876;
+        String type = "TLS";
 
-		System.out.print("Enter path to database file: ");
-		String pathToDataBase = in.nextLine();
+        Scanner in = new Scanner(System.in);
 
-		System.out.print("Enter password to keystore: ");
-		String KeyStorePassword = in.nextLine();
+        System.out.print("Enter path to database file: ");
+        String pathToDataBase = in.nextLine();
 
-		databaseHandler = new DatabaseHandler(pathToDataBase);
-		System.out.println("Database initialized.");
+        System.out.print("Enter password to keystore: ");
+        String KeyStorePassword = in.nextLine();
 
-		try {
-			ServerSocketFactory ssf = SocketFactory.getServerSocketFactory(type, KeyStorePassword);
-			SSLServerSocket ss =  (SSLServerSocket) ssf.createServerSocket(port);
-			ss.setNeedClientAuth(false); // disables client authentication
+        databaseHandler = new DatabaseHandler(pathToDataBase);
+        System.out.println("Database initialized.");
 
-			new NetworkHandler(ss);
-		} catch (IOException e) {
-			System.out.println("Unable to start Server: " + e.getMessage());
-			e.printStackTrace();
-		}
-		System.out.println("Server started.");
+        try {
+            ServerSocketFactory ssf = SocketFactory.getServerSocketFactory(type, KeyStorePassword);
+            SSLServerSocket ss = (SSLServerSocket) ssf.createServerSocket(port);
+            ss.setNeedClientAuth(false); // disables client authentication
 
-		boolean running = true;
-		while (running) {
-			running = MenuHandler.printMenu(in, databaseHandler);
-		}
+            new NetworkHandler(ss);
+        } catch (IOException e) {
+            System.out.println("Unable to start Server: " + e.getMessage());
+            e.printStackTrace();
+        }
+        System.out.println("Server started.");
 
-		in.close();
-		System.out.println("Server closed.");
-	}
+        boolean running = true;
+        while (running) {
+            running = MenuHandler.printMenu(in, databaseHandler);
+        }
+
+        in.close();
+        System.out.println("Server closed.");
+    }
 
 }

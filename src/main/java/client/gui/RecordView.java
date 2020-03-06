@@ -22,7 +22,7 @@ import utility.Request;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecordView implements View{
+public class RecordView implements View {
 
     private Parent parent;
     private String recordChosen;
@@ -30,11 +30,11 @@ public class RecordView implements View{
     private HBox buttonBox;
     private Button newRecordButton;
 
-    RecordView(ViewController viewController){
+    RecordView(ViewController viewController) {
         Label label = new Label("Records");
         label.setTextAlignment(TextAlignment.CENTER);
         label.setFont(new Font(label.getFont().getName(), 20));
-        label.setPadding(new Insets(5,0,10,0));
+        label.setPadding(new Insets(5, 0, 10, 0));
 
         ListView<String> listView = new ListView<>();
         listView.setItems(recordsString);
@@ -74,10 +74,9 @@ public class RecordView implements View{
             @Override
             public void handle(ActionEvent event) {
                 NetworkHandler.communicator.send(new Request("selectRecord", "post", listView.getSelectionModel().getSelectedItem()));
-                if(NetworkHandler.communicator.receive().data.equals("success")){
+                if (NetworkHandler.communicator.receive().data.equals("success")) {
                     viewController.switchScene("detail");
-                }
-                else{
+                } else {
                     //failed
                 }
             }
@@ -98,13 +97,13 @@ public class RecordView implements View{
         });
     }
 
-    public Parent getParent(){
+    public Parent getParent() {
         return parent;
     }
 
     @Override
     public void update() {
-        if(ViewController.role.equals("Doctor") && !buttonBox.getChildren().contains(newRecordButton)){
+        if (ViewController.role.equals("Doctor") && !buttonBox.getChildren().contains(newRecordButton)) {
             buttonBox.getChildren().add(newRecordButton);
         }
 
@@ -112,14 +111,14 @@ public class RecordView implements View{
 
         Request response = NetworkHandler.communicator.receive();
         List<String> records = new ArrayList<>();
-        if(response.type.equals("records") && response.actionType.equals("get") && response.reply  && response.data.equals("start")){
+        if (response.type.equals("records") && response.actionType.equals("get") && response.reply && response.data.equals("start")) {
             response = NetworkHandler.communicator.receive();
-            while (response.data != null){
+            while (response.data != null) {
                 records.add((String) response.data);
                 response = NetworkHandler.communicator.receive();
             }
+        } else {
         }
-        else{}
 
         recordsString.setAll(records);
     }

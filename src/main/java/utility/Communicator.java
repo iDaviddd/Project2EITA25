@@ -27,36 +27,27 @@ public class Communicator {
         writer.flush();
     }
 
-    public Request receive(){
+    public Request receive() {
         Gson gson = new Gson();
 
         Request result = null;
 
         try {
             result = gson.fromJson(reader.readLine(), Request.class);
-            if(result != null){
+            if (result != null) {
                 System.out.println("Received: " + result.type + " " + result.actionType + " " + result.data);
-            }
-            else {
+            } else {
                 System.out.println("Received: " + result);
             }
 
-        }
-        catch (JsonSyntaxException e) {
+        } catch (JsonSyntaxException e) {
             System.out.println("Json syntax error");
             e.printStackTrace();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("Can't read");
             e.printStackTrace();
         }
         return result;
-    }
-
-    public List receive(JsonDeserializer deserializer) throws IOException {
-        Gson gson = new GsonBuilder().registerTypeAdapter(List.class, deserializer).create();
-
-        return gson.fromJson(reader.readLine(), List.class);
     }
 
 

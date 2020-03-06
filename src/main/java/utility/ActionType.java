@@ -1,16 +1,10 @@
 package utility;
 
 public enum ActionType {
-	
-	ADD_USER,
-	MODIFY_USER,
-	REMOVE_USER,
-	LOOKUP_USER,
 	LIST_ALL_USERS,
 	CREATE_RECORD,
 	READ_RECORD,
 	MODIFY_RECORD,
 	REMOVE_RECORD,
 	LIST_RECORD
-
 }

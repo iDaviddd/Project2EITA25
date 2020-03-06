@@ -7,9 +7,9 @@ import utility.User;
 
 import java.util.Scanner;
 
-public class MenuHandler {
+class MenuHandler {
 
-    public static boolean printMenu(Scanner in, DatabaseHandler databaseHandler){
+    static boolean printMenu(Scanner in, DatabaseHandler databaseHandler) {
         String input = in.nextLine();
         boolean running = true;
         switch (input) {
@@ -41,9 +41,9 @@ public class MenuHandler {
                 String personal_number = in.nextLine();
                 System.out.print("Password: ");
                 String salt = User.generateSecretKey(16);
-                String password = Hasher.HashPassword(in.nextLine(),  salt);
+                String password = Hasher.HashPassword(in.nextLine(), salt);
                 String division = "";
-                if(role.equalsIgnoreCase("doctor") || role.equalsIgnoreCase("nurse")) {
+                if (role.equalsIgnoreCase("doctor") || role.equalsIgnoreCase("nurse")) {
                     System.out.print("Division: ");
                     division = in.nextLine();
                 }
@@ -104,7 +104,7 @@ public class MenuHandler {
                 System.out.println("Unknown command. Type 'help' for help.");
                 break;
         }
-        if(!running){
+        if (!running) {
             in.close();
         }
         return running;

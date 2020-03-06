@@ -23,8 +23,6 @@ public class DetailView implements View {
     private Button saveButton;
     private Button deleteButton;
 
-
-
     DetailView(ViewController viewController) {
 
         VBox headerBox = new VBox();
@@ -46,7 +44,6 @@ public class DetailView implements View {
 
         headerBox.getChildren().addAll(patientBox, doctorBox, nurseBox);
 
-
         patientBox.getChildren().addAll(patientLabel, patientText);
         doctorBox.getChildren().addAll(doctorLabel, doctorText);
         nurseBox.getChildren().addAll(nurseLabel, nurseText);
@@ -67,13 +64,12 @@ public class DetailView implements View {
         saveButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                NetworkHandler.communicator.send(new Request("record","post", recordText.getText()));
-                if(NetworkHandler.communicator.receive().type.equals("error")){
+                NetworkHandler.communicator.send(new Request("record", "post", recordText.getText()));
+                if (NetworkHandler.communicator.receive().type.equals("error")) {
                     Alert a = new Alert(Alert.AlertType.ERROR);
                     a.setContentText("Not allowed to write to record");
                     a.show();
-                }
-                else{
+                } else {
                     viewController.switchScene("records");
                 }
             }
@@ -83,13 +79,12 @@ public class DetailView implements View {
         deleteButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                NetworkHandler.communicator.send(new Request("record","delete", ""));
-                if(NetworkHandler.communicator.receive().type.equals("error")){
+                NetworkHandler.communicator.send(new Request("record", "delete", ""));
+                if (NetworkHandler.communicator.receive().type.equals("error")) {
                     Alert a = new Alert(Alert.AlertType.ERROR);
                     a.setContentText("Not allowed to delete record");
                     a.show();
-                }
-                else{
+                } else {
                     viewController.switchScene("records");
                 }
             }
@@ -112,24 +107,22 @@ public class DetailView implements View {
 
     @Override
     public void update() {
-        if((ViewController.role.equals("Doctor") || ViewController.role.equals("Nurse")) && !bodyBox.getChildren().contains(saveButton)){
+        if ((ViewController.role.equals("Doctor") || ViewController.role.equals("Nurse")) && !bodyBox.getChildren().contains(saveButton)) {
             recordText.editableProperty().setValue(true);
             bodyBox.getChildren().add(saveButton);
         }
-        if(ViewController.role.equals("Government") && !bodyBox.getChildren().contains(deleteButton)){
+        if (ViewController.role.equals("Government") && !bodyBox.getChildren().contains(deleteButton)) {
             bodyBox.getChildren().add(deleteButton);
         }
 
         NetworkHandler.communicator.send(new Request("record", "get", ""));
         Request r = NetworkHandler.communicator.receive();
 
-        if(r.type.equals("error")){
-            //Print error
+        if (r.type.equals("error")) {
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setContentText("Not allowed to view record");
             a.show();
-        }
-        else{
+        } else {
             String patientName = r.data;
 
             String patientNumber = NetworkHandler.communicator.receive().data;

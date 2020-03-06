@@ -37,10 +37,6 @@ public class Log {
         return record_id;
     }
 
-    public Integer getLogId() {
-        return log_id;
-    }
-
     public String getActionType() {
         return action_type;
     }

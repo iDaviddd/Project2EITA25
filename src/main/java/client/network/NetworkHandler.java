@@ -9,7 +9,6 @@ import java.security.KeyStore;
 
 public class NetworkHandler {
     private static SSLSocket socket;
-    private static BufferedReader in;
     public static Communicator communicator;
 
     public NetworkHandler(String host, int port) throws InterruptedException {

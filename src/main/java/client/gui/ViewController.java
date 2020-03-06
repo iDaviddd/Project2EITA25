@@ -9,13 +9,11 @@ import javafx.stage.Stage;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class ViewController extends Stage {
     private Scene scene;
-    public Map<String, View> views = new HashMap<>();
+    private Map<String, View> views = new HashMap<>();
     public ObservableMap<String, String> user = FXCollections.observableHashMap();
-    public static String role = "";
-
+    static String role = "";
 
     public ViewController(ClientMain clientMain) {
 
@@ -37,7 +35,7 @@ public class ViewController extends Stage {
     }
 
     void switchScene(String viewName, boolean update) {
-        if(update)  views.get(viewName).update();
+        if (update) views.get(viewName).update();
         this.scene.setRoot(views.get(viewName).getParent());
     }
 }

@@ -3,7 +3,6 @@ package server.network;
 import javax.net.ssl.*;
 import java.io.*;
 import java.net.ServerSocket;
-
 import utility.*;
 
 
@@ -33,7 +32,7 @@ public class NetworkHandler implements Runnable {
 
             Communicator communicator = new Communicator(in, out);
             User user = null;
-            while(user == null){
+            while (user == null) {
                 user = LoginHandler.login(communicator);
             }
 
@@ -52,7 +51,6 @@ public class NetworkHandler implements Runnable {
         } catch (IOException e) {
             System.out.println("Client died: " + e.getMessage());
             e.printStackTrace();
-            return;
         }
     }
 
