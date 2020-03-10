@@ -72,7 +72,7 @@ public class RecordView implements View {
 
         backButton.setOnAction(event -> viewController.switchScene("patients", false));
 
-        newRecordButton.setOnAction(event -> viewController.switchScene("create", false));
+        newRecordButton.setOnAction(event -> viewController.switchScene("create", true));
     }
 
     public Parent getParent() {

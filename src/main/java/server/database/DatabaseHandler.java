@@ -78,7 +78,6 @@ public class DatabaseHandler {
         String sql = "UPDATE records SET " + change_column + " = ? WHERE " + search_column + " = ?";
 
         try {
-            Connection conn = DriverManager.getConnection(url);
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, value);
             pstmt.setString(2, search_term);
@@ -103,7 +102,7 @@ public class DatabaseHandler {
             pstmt.setString(3, r.getNursePersonalNumber());
             pstmt.setString(4, r.getDivision());
             pstmt.setString(5, r.getRecord());
-            pstmt.executeUpdate();
+            pstmt.execute();
         } catch (SQLException e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -124,7 +123,7 @@ public class DatabaseHandler {
             pstmt.setInt(2, log.getRecordId());
             pstmt.setString(3, log.getActionType());
             pstmt.setString(4, log.getAction());
-            pstmt.executeUpdate();
+            pstmt.execute();
         } catch (SQLException e) {
             System.out.println("Error: " + e.getMessage());
         }

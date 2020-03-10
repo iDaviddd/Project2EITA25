@@ -36,7 +36,7 @@ public class NetworkHandler {
                 Thread.sleep(5000);
             }
         }
-
+        System.out.println("Session: " + socket.getSession());
         System.out.println("secure connection established\n\n");
         try {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
